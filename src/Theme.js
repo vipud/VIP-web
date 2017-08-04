@@ -1,8 +1,8 @@
 import React from 'react';
 
 //accepted list of emails
-const university = "Arizona State University";
-const validDomain = "asu.edu";
+const university = "University of Delaware";
+const validDomain = "udel.edu";
 
 //Colors for a particular theme
 const Primary = '#0048a5';

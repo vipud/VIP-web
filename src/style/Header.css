@@ -1,17 +1,25 @@
 .header {
   position: relative;
-  background-color: #ffffff;
-  height: 57px;
-  margin-left: 20px;
-  margin-right: 20px;
+  background-color: #0048a5;
+  height: 90px;
+  margin-left: 0px;
+  margin-right: 0px;
+  text-align: center;
 }
 
 
 .image {
   position: relative;
-  left: 20px;
-  height: 48px;
-  padding-top: 13px;
+  text-align: center;
+  height: 85px;
+  padding-top: 8px;
+}
+
+#seal {
+  position: absolute;
+  left:10%;
+  height: 100%;
+  width:70%;
 }
 
 
@@ -32,17 +40,7 @@
 /*****************************
 ******************************/
 
-@media screen and (min-width: 768px) {
-    #small {
-        display: none;
-    }
-
-}
-
 @media screen and (max-width: 767px) {
-    #large {
-        display: none;
-    }
     .menuBarButton {
         display: block !important;
     }
@@ -68,12 +66,12 @@
 Navbar and MateralUI CSS Edits
 ******************************/
 .navbar {
-  background-color: #353535 !important;
+  background-color: #f8f8f8 !important;
   height: 61px;
 }
 
 .navHeaderCollapse {
-  background-color: #353535 !important;
+  background-color: #f8f8f8!important;
   margin-top: -1px;
   width: 100%;
 }
@@ -87,14 +85,14 @@ Navbar and MateralUI CSS Edits
   clear:right;
 }
 .menuBarButton {
-    height: 60px !important;
+    height: 61px !important;
 }
 .menuBarButton:hover{
-  color: #ffc425 !important;
-  background-color: #000000 !important;
+  color: #0048a5!important;
+  background-color: #d9e1f9 !important;
 }
 
 .dropdown-menu {
-  background-color: #353535 !important;
+  background-color: #f8f8f8!important;
   top: 230%;
 }

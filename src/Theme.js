@@ -5,8 +5,8 @@ const university = "Arizona State University";
 const validDomain = "asu.edu";
 
 //Colors for a particular theme
-const Primary = '#ffc425';
-const Secondary = "#8c1d40";
+const Primary = '#0048a5';
+const Secondary = "#ffd200";
 const DeleteColor = "#8c1d40";
 const NavColor = "#353535";
 

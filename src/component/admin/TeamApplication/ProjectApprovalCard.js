@@ -6,6 +6,8 @@ import FlatButton from 'material-ui/FlatButton';
 import MuiButton from '../../MuiButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import TextField from 'material-ui/TextField';
+
+import {DeleteColor} from '../../../Theme';
 import firebase from "../../../firebase";
 
 const style = {
@@ -14,7 +16,6 @@ const style = {
 
 const TeamApprovalPath = "Teams";
 const TeamRejectPath = "RejectedTeams";
-const secondary_color = "#8c1d40";
 
 class ProjectApprovalCard extends Component {
   constructor(props) {
@@ -103,7 +104,7 @@ class ProjectApprovalCard extends Component {
 
   render = () => {
     const actions = [
-      <FlatButton label="No" color={secondary_color} onClick = {this.handleClose}/>,
+      <FlatButton label="No"  onClick = {this.handleClose}/>,
       <FlatButton label="Yes" onClick = {this.handleReject}/>
     ];
 
@@ -134,7 +135,7 @@ class ProjectApprovalCard extends Component {
                 {sections}
               </CardText>
               <CardActions style = {style.actions}>
-                <MuiButton label = "Deny" color = {secondary_color} onClick = {this.sendPopup}/>
+                <MuiButton label = "Deny" color = {DeleteColor} onClick = {this.sendPopup}/>
                 <MuiButton label = "Approve" onClick = {this.handleAccept}/>
               </CardActions>
             </Card>

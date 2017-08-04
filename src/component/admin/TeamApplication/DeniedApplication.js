@@ -4,7 +4,7 @@ import firebase from '../../../firebase';
 import {Link} from 'react-router-dom';
 import MuiButton from '../../MuiButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Primary, {Secondary} from '../../../Theme'
+import Primary, {DeleteColor} from '../../../Theme'
 import {
   Table,
   TableBody,
@@ -105,7 +105,7 @@ class DeniedApplications extends Component {
               </TableBody>
             </Table>
             <div style = {{float:"right"}}>
-              <MuiButton label="Erase" color = {Secondary} onClick={this.eraseApplications}/>
+              <MuiButton label="Erase" color = {DeleteColor} onClick={this.eraseApplications}/>
               <MuiButton label="Recover" onClick={this.recoverApplications}/>
             </div>
           </div>

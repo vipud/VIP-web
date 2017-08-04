@@ -13,6 +13,7 @@ import userStore from '../stores/UserStore';
 import ResourceMenu from './resource/ResourceMenu';
 
 import Full_logo from '../assets/full_logo.png';
+import Seal from '../assets/seal.png';
 import Small_logo from '../assets/small_logo.png';
 import Vip_logo from '../assets/Vip_logo.png';
 import '../style/Header.css';
@@ -24,11 +25,10 @@ class Header extends Component {
     return (
       <div>
         <div className = "header">
-          <a href = "https://www.asu.edu/">
+          <a href = "https://www.udel.edu/">
             <img src = {Full_logo}  className = "image" id = "large"/>
-            <img src = {Small_logo} className = "image" id = "small" />
+            <img src = {Seal}  id = "seal" />
           </a>
-            <Link to="/"><img src = {Vip_logo} className = "image" id = "VIP" /></Link>
         </div>
         <nav className="navbar navbar-default navbar-static-top">
 
@@ -40,7 +40,7 @@ class Header extends Component {
             </button>
 
           <div className="collapse navbar-collapse navHeaderCollapse" >
-              <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+              <MuiThemeProvider>
                 <div>
                   <div data-toggle="collapse" data-target=".navHeaderCollapse" className="visible-xs row" > 
                     <Link to="/"><FlatButton label="Home" className="menuBarButton" fullWidth={true}/></Link>

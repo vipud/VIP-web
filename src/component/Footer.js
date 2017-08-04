@@ -7,6 +7,7 @@ class Footer extends Component {
   render() {
     return (
       <div className = 'footer'>
+        <div id = 'line' />
           <img src = {Small_logo} alt = "ASU footer" className = "image-footer" />
       </div>
     );

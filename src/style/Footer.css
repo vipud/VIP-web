@@ -3,8 +3,13 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: #d6dedb;
-  height: 40px;
+  background-color: #0048a5;
+  height: 80px;
+}
+
+#line {
+  height: 5px;
+  background-color: #ffd200;
 }
 
 .image-footer {
@@ -12,5 +17,5 @@
   float:right;
   right:20px;
   padding-top: 10px;
-  height: 30px;
+  height: 70px;
 }

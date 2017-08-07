@@ -22,7 +22,7 @@ var db = 'Student Application';
 const style = {
   margin: "10px"
 };
-const notIncluded = ['fbkey', 'errorText','error','other','skills', 'questions'];
+
 // Create an array in this.state. then populate the array with TeamApplication key values. Then access them in the TextFieldComponent with the ids in loop.
 class StudentApplication extends Component{
   constructor(props) {
@@ -34,6 +34,7 @@ class StudentApplication extends Component{
         error:{},
         courses:'',
         value:0,
+        notIncluded:['fbkey', 'errorText','error','other']
       };    
     }
 
@@ -46,16 +47,19 @@ class StudentApplication extends Component{
         
         firebase.database().ref(`FormQuestions/${db}`).once('value').then( (snap) => {
           let data = {}
+          let notIncluded = this.state.notIncluded;
           Object.keys(snap.val()).forEach((i)=>{
             data[snap.val()[i].id] = ''
+            console.log(snap.val()[i]);
+            if(!snap.val()[i].required) {
+              notIncluded.push(snap.val()[i].id);
+            }
           });
           this.setState({
             questionsArray: snap.val(),
-            data:data
+            data:data,
+            notIncluded:notIncluded
           });
-        });
-        firebase.database().ref(`Courses`).on('value', (snap)=> {
-          this.setState({courses:snap.val()[this.state.title]});
         });
     }
 
@@ -85,7 +89,7 @@ class StudentApplication extends Component{
   }
 
   firebasewrite = () => {
-    let empty = checkEmpty(this.state.error, this.state.data, this.state.data.email, notIncluded);
+    let empty = checkEmpty(this.state.error, this.state.data, this.state.data.email, this.state.notIncluded);
     if(empty[0]) {
       if(`${db}`==='General Information'){
           const rootRef = firebase.database().ref().child('GeneralInformation');

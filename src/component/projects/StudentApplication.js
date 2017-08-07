@@ -22,21 +22,13 @@ var db = 'Student Application';
 const style = {
   margin: "10px"
 };
-const notIncluded = ['fbkey', 'errorText','error','other'];
+const notIncluded = ['fbkey', 'errorText','error','other','skills', 'questions'];
 // Create an array in this.state. then populate the array with TeamApplication key values. Then access them in the TextFieldComponent with the ids in loop.
 class StudentApplication extends Component{
   constructor(props) {
       super(props);
       this.state = {
-        level: '',
-        program: '',
-        gradeType: '',
-        name: '',
-        email: '',
-        other:'',
-        major:'',
-        gpa:'',
-        title:'',
+        data:{},
         fbkey: this.props.match.params.projectid,
         errorText:'',
         error:{},
@@ -53,8 +45,13 @@ class StudentApplication extends Component{
         })
         
         firebase.database().ref(`FormQuestions/${db}`).once('value').then( (snap) => {
+          let data = {}
+          Object.keys(snap.val()).forEach((i)=>{
+            data[snap.val()[i].id] = ''
+          });
           this.setState({
             questionsArray: snap.val(),
+            data:data
           });
         });
         firebase.database().ref(`Courses`).on('value', (snap)=> {
@@ -73,7 +70,7 @@ class StudentApplication extends Component{
     var res = str.split("-");
     var key = res[2].charAt(0).toLowerCase() + res[2].slice(1);
     var val = event.target.value;
-    var obj  = {};
+    var obj  = this.state.data;
     obj[key] = val;
     if(key==="topics"){
      var str = event.target.value;
@@ -88,31 +85,23 @@ class StudentApplication extends Component{
   }
 
   firebasewrite = () => {
-    let empty = checkEmpty(this.state.error, this.state, this.state.email, notIncluded);
+    let empty = checkEmpty(this.state.error, this.state.data, this.state.data.email, notIncluded);
     if(empty[0]) {
       if(`${db}`==='General Information'){
           const rootRef = firebase.database().ref().child('GeneralInformation');
-          rootRef.push({
-          name : this.state.name,
-          email : this.state.email,
-      });
+          rootRef.push(
+          this.state.data
+      );
       } else if(`${db}`==='Academic Information'){
           const rootRef = firebase.database().ref().child('AcademicInformation');
-          rootRef.push({
-          major: this.state.major,
-          gpa: this.state.gpa,
-          });
+          rootRef.push(
+          this.state.data
+          );
       } else if(`${db}`==='Student Application'){
           const rootRef = firebase.database().ref(`${TeamFormPath}`);
-          rootRef.push({
-          level: this.state.level,
-          program: this.state.program,
-          gradeType: this.state.gradeType,
-          name: this.state.name,
-          email: this.state.email,
-          other: this.state.other,
-          team:this.state.title
-      });
+          rootRef.push(
+          this.state.data
+      );
       }
       
       
@@ -169,14 +158,6 @@ class StudentApplication extends Component{
                     : (<h2>Loading..</h2>) }                
                 <br/>
                 </div>
-                <DropDownMenu value = {this.state.value} menuStyle = {{textAlign:'center'}}>
-                  <MenuItem value = {0} primaryText = "Select A Course" />
-                  {this.state.courses &&
-                    Object.keys(this.state.courses).map((key) => {
-                      return <MenuItem key = {key} value={key} primaryText = {this.state.courses[key]}/>;
-                    })
-                  }
-                </DropDownMenu>
               </Card><br/>
                        
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>

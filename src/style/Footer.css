@@ -4,7 +4,7 @@
   bottom: 0;
   left: 0;
   background-color: #0048a5;
-  height: 80px;
+  height: 40px;
 }
 
 #line {
@@ -17,5 +17,5 @@
   float:right;
   right:20px;
   padding-top: 10px;
-  height: 70px;
+  height: 30px;
 }

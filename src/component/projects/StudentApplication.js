@@ -50,7 +50,6 @@ class StudentApplication extends Component{
           let notIncluded = this.state.notIncluded;
           Object.keys(snap.val()).forEach((i)=>{
             data[snap.val()[i].id] = ''
-            console.log(snap.val()[i]);
             if(!snap.val()[i].required) {
               notIncluded.push(snap.val()[i].id);
             }

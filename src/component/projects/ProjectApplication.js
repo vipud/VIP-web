@@ -57,12 +57,13 @@ class ProjectApplication extends Component{
           questionsArray: snap.val(),
         });
       });
-      console.log('mount');
     } 
 
     getdata =(childdata) =>{
+      let data = this.state.data;
+      data['logo'] = childdata;
       this.setState({
-        teamLogo: childdata,
+        data:data
       });
     }
 

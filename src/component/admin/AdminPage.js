@@ -4,7 +4,6 @@ import MuiButton from '../MuiButton';
 import PendingApplication from './TeamApplication/PendingApplication';
 import DeniedApplication from './TeamApplication/DeniedApplication';
 import ManageAdmin from './ManageAdmin';
-import ManageCourses from './GateKeeper/ManageCourses';
 import GateKeeper from './GateKeeper/ManageGateKeeper';
 import SA_Tool from './StudentApplication/StudentApplicationTool';
 import Roster_Tool from './RosterTool/RosterTool';
@@ -12,7 +11,7 @@ import userStore from '../../stores/UserStore';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import Primary, {NavColor} from '../../Theme';
+import Primary, {NavColor, TextColor} from '../../Theme';
 
 import {Link, Route, Redirect} from 'react-router-dom';
 import {AdminRoute} from '../Route';
@@ -94,21 +93,18 @@ class AdminPage extends Component {
           :<h1 />
         }
         {this.state.Courses
-          ?<div>
-            <ManageCourses />
-            <GateKeeper />
-          </div>
+          ?<GateKeeper />
           :<h1 />
         }  
         <AdminRoute user={userStore} path = "/admin/projectApplication/Denied" component={DeniedApplication} />
          <div>
           <MuiThemeProvider>
             <Tabs inkBarStyle ={{color:Primary}}>
-              <Tab label = "Project Application" style={{backgroundColor:NavColor}} onActive={this.showProject}/>
-              <Tab label = "Student Application" style={{backgroundColor:NavColor}} onActive={this.showStudent}/>
-              <Tab label = "Rosters" style={{backgroundColor:NavColor}} onActive={this.showRoster}/>
-              <Tab label = "Manage Admin" style={{backgroundColor:NavColor}} onActive={this.showAdminTool}/>
-              <Tab label = "Manage Courses" style={{backgroundColor:NavColor}} onActive={this.showCourses}/>         
+              <Tab label = "Project Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showProject}/>
+              <Tab label = "Student Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showStudent}/>
+              <Tab label = "Rosters" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showRoster}/>
+              <Tab label = "Manage Admin" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showAdminTool}/>
+              <Tab label = "Manage GateKeeper" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showCourses}/>         
             </Tabs>
           </MuiThemeProvider>
         </div>

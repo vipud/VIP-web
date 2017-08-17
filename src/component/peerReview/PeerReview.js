@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import CheckBox from "./questionType/CheckBox";
 import Score from "./questionType/Score";
 
+
 const questionTypes = ["score", "comment", "number", "multiple choices"]
 
 class PeerReview extends Component {

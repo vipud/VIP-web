@@ -41,7 +41,7 @@ class StudentApplication extends Component{
     componentDidMount() {
         firebase.database().ref(`Teams/`+this.state.fbkey).once(`value`).then( (snap) => {
             this.setState({
-                title: snap.val().title,
+                title: snap.val().teamName,
             });
         })
         

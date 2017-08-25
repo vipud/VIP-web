@@ -9,7 +9,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import Primary, {NavColor} from '../../Theme';
+import Primary, {NavColor, TextColor} from '../../Theme';
 
 class AdvisorPage extends Component {
   constructor() {
@@ -115,9 +115,9 @@ class AdvisorPage extends Component {
             <div style = {{paddingTop:'20px'}}>
               
                 <Tabs inkBarStyle ={{color:Primary}}>
-                  <Tab label = "Student Application" style={{backgroundColor:NavColor}} onActive={this.showStudent}/>
-                  <Tab label = "Manage Advisors" style={{backgroundColor:NavColor}} onActive={this.showAdvisors}/>
-                  <Tab label = "Edit Team Information" style={{backgroundColor:NavColor}} onActive={this.showTeam}/>         
+                  <Tab label = "Student Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showStudent}/>
+                  <Tab label = "Manage Advisors" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showAdvisors}/>
+                  <Tab label = "Edit Team Information" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showTeam}/>         
                 </Tabs>
               
             </div>

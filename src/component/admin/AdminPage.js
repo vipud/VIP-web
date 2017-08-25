@@ -95,8 +95,7 @@ class AdminPage extends Component {
             }
             {this.state.Courses
               ?<div>
-                <h1 style = {{textAlign:'center'}}>Manage Courses and GateKeepers</h1>
-                <ManageCourses />
+                <h1 style = {{textAlign:'center'}}>Manage GateKeepers</h1>
                 <GateKeeper />
               </div>
               :<h1 />
@@ -106,7 +105,7 @@ class AdminPage extends Component {
         <AdminRoute user={userStore} path = "/admin/projectApplication/Denied" component={DeniedApplication} />
          <div style = {{paddingTop:'20px'}}>
           <MuiThemeProvider>
-            <Tabs inkBarStyle ={{color:Primary}}>
+            <Tabs inkBarStyle ={{color: Primary}}>
               <Tab label = "Project Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showProject}/>
               <Tab label = "Student Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showStudent}/>
               <Tab label = "Rosters" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showRoster}/>

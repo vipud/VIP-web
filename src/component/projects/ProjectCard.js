@@ -2,26 +2,37 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardActions, CardMedia, CardTitle, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import Vip_logo from '../../assets/Vip_logo.png';
+
 
 import { Link, Route } from 'react-router-dom';
-
 
 const style = {
   card: {
     paddingBottom: "10px",
     margin: "10px",
-    height: "300px"
+    height: "340px"
   },
   cardMedia:{
-    height: "100px"
+    height: "100px",
   },
-  cardHeader: {
+  title: {
+    textAlign : 'left',
+    fontSize: '1.3em',
+    height: "50px",
+    overflow: "hidden",
+    textOverflow:"ellipsis"
+  },
+  subtitle: {
     textAlign : 'left',
     fontSize: '1.2em',
-    maxHeight: "100px"
+    height: "50px",
+    overflow: "hidden",
+    textOverflow:"ellipsis"
   },
   cardText: {
     overflow: "hidden",
+    textAlign:"right",
     textOverflow: "ellipsis",
     height: "140px"
   }
@@ -43,14 +54,21 @@ class ProjectCard extends Component {
               subtitle={this.props.project.subtitle}
               actAsExpander={false}
               showExpandableButton={false}
-              titleStyle = {style.cardHeader}
+              titleStyle = {style.title}
+              subtitleStyle = {style.subtitle}
             />
-            {/*<CardMedia style={style.cardMedia}>
-              <img src={this.props.project.logo} alt="" />
-            </CardMedia>*/}
-            <CardText expandable={false} style={style.cardText}>
-              {this.props.project.nature}
-            </CardText>
+            {/* <CardMedia>
+              {this.props.project.logo
+              ?<img src={this.props.project.logo} alt="" style = {style.cardMedia}/>
+              :<img src={Vip_logo} alt="" style = {style.cardMedia}/>
+              }
+            </CardMedia> */}
+              <CardText expandable={false} style={style.cardText}>
+              {this.props.project.logo
+                ?<img src={this.props.project.logo} alt="" style = {style.cardMedia}/>
+                :<img src={Vip_logo} alt="" style = {style.cardMedia}/>
+                }
+              </CardText>
               <CardActions>
                 <Link to={`projects/${this.props.fbkey}`}><FlatButton label="Learn more" /></Link>                
               </CardActions>

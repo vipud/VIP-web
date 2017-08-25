@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
@@ -10,6 +11,7 @@ import {Card, CardTitle} from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import SelectField from 'material-ui/SelectField';
 
 import {checkEmpty} from '../../Validation';
 import Primary, {university} from '../../Theme';
@@ -33,23 +35,33 @@ class StudentApplication extends Component{
         errorText:'',
         error:{},
         courses:'',
+        semester:'',
         value:0,
         notIncluded:['fbkey', 'errorText','error','other']
-      };    
+      };
+      this.handleMenuChange = this.handleMenuChange.bind(this);    
     }
 
     componentDidMount() {
+        let data = {};
         firebase.database().ref(`Teams/`+this.state.fbkey).once(`value`).then( (snap) => {
+          data['teamName'] = snap.val().teamName;
             this.setState({
                 title: snap.val().teamName,
             });
-        })
+        });
+
+        firebase.database().ref('Semester').once('value').then((snap)=>{
+          data['semester'] = snap.val().current;
+        });
         
         firebase.database().ref(`FormQuestions/${db}`).once('value').then( (snap) => {
-          let data = {}
+          
+          let empty = {};
           let notIncluded = this.state.notIncluded;
           Object.keys(snap.val()).forEach((i)=>{
             data[snap.val()[i].id] = ''
+            empty[snap.val()[i].id] = ''
             if(!snap.val()[i].required) {
               notIncluded.push(snap.val()[i].id);
             }
@@ -57,14 +69,28 @@ class StudentApplication extends Component{
           this.setState({
             questionsArray: snap.val(),
             data:data,
+            empty:empty,
             notIncluded:notIncluded
           });
+        });
+        
+        firebase.database().ref(`Courses`).on('value', (snap) => {
+          this.setState({courses:snap.val()});
         });
     }
 
     getdata =(childdata) =>{
       this.setState({
         teamLogo: childdata,
+      });
+    }
+
+    handleMenuChange(event, index, value) {
+      let obj  = this.state.data;
+      obj['course'] = this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[index]].course
+      this.setState({
+        value:value,
+        data:obj
       });
     }
 
@@ -75,14 +101,14 @@ class StudentApplication extends Component{
     var val = event.target.value;
     var obj  = this.state.data;
     obj[key] = val;
-    if(key==="topics"){
+    if(key==="topics") {
      var str = event.target.value;
      var res=str.split(",");
      this.setState({
         topics : res,
       })
     }
-    else{
+    else {
         this.setState(obj);
     }
   }
@@ -118,7 +144,9 @@ class StudentApplication extends Component{
           major: '',
           gpa:'',
           errorText:'',
-          error:[]
+          error:[],
+          open:true,
+          data:this.state.empty
 
       });
     }
@@ -126,12 +154,10 @@ class StudentApplication extends Component{
       errorText:empty[2],
       error:empty[1]
     });
-    console.log(empty[1]);
   }
 
 	render(){
     let questionsArray = this.state.questionsArray;
-    //alert(JSON.stringify(questionsArray));
 		return (
 		<div>
 		  <MuiThemeProvider>
@@ -145,21 +171,32 @@ class StudentApplication extends Component{
                       return(
                         <div key={id}>
                           <TextField
+                          value = {this.state.data[questionsArray[id].id]}
                           floatingLabelText={questionsArray[id].text}
-                          hintText={questionsArray[id].hint}
                           errorText={this.state.errorText}
                           onChange={ this.handleChange}/><br /></div>)
                     }
                     return(
                   <div key = {id}>
                     <TextField
+                      value = {this.state.data[questionsArray[id].id]}
                       floatingLabelText={questionsArray[id].text}
-                      hintText={questionsArray[id].hint}
                       errorText={this.state.error[questionsArray[id].id]}
                       onChange={ this.handleChange}/><br/>
                   </div>)}))
-                    : (<h2>Loading..</h2>) }                
+                    : (<h2>Loading..</h2>) }    
                 <br/>
+                {!this.state.courses === null
+                ?<SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleMenuChange}>
+                  
+                    {Object.keys(this.state.courses[this.state.title]).map((key, index) => {
+                      return <MenuItem value = {index} primaryText = {this.state.courses[this.state.title][key].course} key = {key}/>
+                    })}
+                    
+                  
+                </SelectField> 
+                :<h1/>
+                  }
                 </div>
               </Card><br/>
                        
@@ -169,6 +206,12 @@ class StudentApplication extends Component{
                   data-toggle="modal" data-target="#myModal" /> <br />
                 </div>
               </MuiThemeProvider>
+              <Dialog
+                title="Applied"
+                modal={false}
+                open={this.state.open}
+                onRequestClose={()=>{this.setState({open:false})}}
+                />
             </div>
 		  </MuiThemeProvider>
 		</div> )

@@ -94,7 +94,8 @@ class EditProjectCard extends Component {
   }
 
   fbWrite() {
-    let empty = checkEmpty(this.state.error, this.state.project, this.state.project.contactEmail, notIncluded);
+    let empty = checkEmpty(this.state.error, this.state.project, this.state.project.leadFacultyEmail, notIncluded);
+    console.log(empty);
     if(empty[0]) {
       firebase.database().ref(`Teams/${this.state.fbKey}`).set(this.state.project);
     this.dialogOpen();
@@ -108,14 +109,14 @@ class EditProjectCard extends Component {
   render() {
     let keys = Object.keys(this.props.project);
     let items = keys.map((key) => {
-      if (notIncluded.includes(key) && key!="project Link"){
+      if (notIncluded.includes(key) && key!=="project Link"){
         return null;
       }
-      if(key==='email') {
+      if(key==='leadFacultyEmail') {
         return(
           <div key = {key}>
           <h3>{key}</h3>
-          <TextField id = {key} errorText = {this.state.emailMessage} defaultValue = {this.state.project[key]} multiLine = {true} onChange = {this.handleChange} rows = {2} fullWidth = {true}
+          <TextField id = {key} errorText = {this.state.emailMessage} defaultValue = {this.state.project[key]} multiLine = {true} onChange = {this.handleChange} rows = {1} fullWidth = {true}
            underlineStyle={{borderColor:Primary}} /> 
         </div>
         );
@@ -124,7 +125,7 @@ class EditProjectCard extends Component {
       return(
         <div key = {key}>
           <h3>{key}</h3>
-          <TextField id = {key} errorText = {this.state.error[key]} defaultValue = {this.props.project[key]} multiLine = {true} onChange = {this.handleChange} rows = {2} fullWidth = {true}
+          <TextField id = {key} errorText = {this.state.error[key]} defaultValue = {this.props.project[key]} multiLine = {true} onChange = {this.handleChange} rows = {1} fullWidth = {true}
           underlineStyle={{borderColor:Primary}} /> 
         </div>
       );

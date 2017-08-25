@@ -55,7 +55,8 @@ class ResourcePage extends Component {
 		this.handleDelete = this.handleDelete.bind(this);
     this.handleTab = this.handleTab.bind(this);
 		this.onDrop = this.onDrop.bind(this);
-		this.sendPopup = this.sendPopup.bind(this);
+    this.sendPopup = this.sendPopup.bind(this);
+    this.updateContent = this.updateContent.bind(this);
   }
 
 
@@ -87,7 +88,7 @@ class ResourcePage extends Component {
 	
 	handleDelete(){
 		firebase.database().ref(resourcePath).child(this.state.category).remove();
-		firebase.database().ref(resourcePath + '/category/').child(this.state.category.split("_").join(" ").toUpperCase()).remove();
+		firebase.database().ref(resourcePath + '/category/').child(this.state.category).remove();
 		this.setState({
       redirectToDashboard: true
     });
@@ -133,24 +134,34 @@ class ResourcePage extends Component {
     });
 	}
 
-  componentDidMount() {
-    firebase.database().ref(`${resourcePath}/${this.state.category}`).once('value').then( (snap) => {
+  updateContent(category){
+    console.log(category)
+    firebase.database().ref(`${resourcePath}/${category}`).once('value').then( (snap) => {
 			if (snap.val()) {
 				this.setState({
-					content: snap.val().content,
+          content: snap.val().content,
+          editting: false
 				});
 			} else {
-				console.log("no content yet")
-			}
-      
+				this.setState({
+          content: "",
+          editting: false
+				});
+      }
     });
+    
+  }
+
+  componentDidMount() {
+    this.updateContent(this.state.category);
 	}
 	
 	componentWillReceiveProps(nextProps) {
 		if (nextProps.match.params.category !== this.state.category){
 			this.setState({
 				category: nextProps.match.params.category
-			})
+      })
+      this.updateContent(nextProps.match.params.category);
 		}
 	}
 
@@ -180,7 +191,7 @@ class ResourcePage extends Component {
 									<TextField
 									id="content"
 									hintText="You can use markdown syntax here to edit resource content"
-									floatingLabelText="*bold* _italics_ ~strike~ `code` ```preformatted``` >quote"
+									floatingLabelText="**bold** _italics_ # header `code` ```preformatted``` >quote"
 									multiLine={true}
 									rows={4}
 									onChange={this.contentChange}

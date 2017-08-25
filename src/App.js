@@ -22,16 +22,11 @@ import PeerReview from './component/peerReview/PeerReview';
 import Projects from './component/projects/Projects';
 import Resource from './component/resource/Resource';
 import Student from './component/student/Student';
-import MuiTable from './component/MuiTable';
+import TestPlot from './component/peerReview/analytics/TestPlot';
 import { AdminRoute, PublicRoute,PrivateRoute, UnEnrolledRoute, AdvisorRoute, StudentRoute } from './component/Route';
 
 injectTapEventPlugin();
 
-const Faculty = () => (
-  <div>
-    <h2>Faculty</h2>
-  </div>
-)
 
 const NotInTheSystem = () => (
   <div>
@@ -55,7 +50,7 @@ class App extends Component {
         userStore.login()
         userStore.fetchUserInfo(user.email, user.displayName, user.photoURL)
         fetchRole(user.email).then(role => {
-          console.log(role);
+          // console.log(role);
           userStore.fetchUserRole(role);
           appStore.finishLoading()
           if (!sessionStorage.getItem("loggedin")) {
@@ -100,6 +95,7 @@ class App extends Component {
                 <Route path="/announcement" component={Announcement}/>
                 <Route path="/projects" component={Projects}/>
                 <Route path="/peer-review" component={PeerReview}/>
+                <Route path="/Test-Plot" component={TestPlot}/>
                 <Route path="/resource/:category" component={Resource}/>
                 <PublicRoute path="/login" authed={userStore.authed} component={LoginPage} />
                 <PrivateRoute path="/dashboard" authed={userStore.authed} component={DashBoard} />

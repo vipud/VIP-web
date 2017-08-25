@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import MuiButton from '../MuiButton';
 
 import PendingApplication from './TeamApplication/PendingApplication';
 import DeniedApplication from './TeamApplication/DeniedApplication';
@@ -9,11 +8,11 @@ import SA_Tool from './StudentApplication/StudentApplicationTool';
 import Roster_Tool from './RosterTool/RosterTool';
 import userStore from '../../stores/UserStore';
 import {Tabs, Tab} from 'material-ui/Tabs';
+import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import Primary, {NavColor, TextColor} from '../../Theme';
 
-import {Link, Route, Redirect} from 'react-router-dom';
 import {AdminRoute} from '../Route';
 
 class AdminPage extends Component {
@@ -21,7 +20,7 @@ class AdminPage extends Component {
   constructor() {
     super();
     this.state = {
-      GateKeeper:true
+      Project:true
     }
     this.setToFalse = this.setToFalse.bind(this);
     this.showProject = this.showProject.bind(this);
@@ -73,31 +72,39 @@ class AdminPage extends Component {
   render = () => {
     return(
       <div>
-        {this.state.Project
-          ?<PendingApplication />
-          :<div />
-        }
-        {this.state.Student
-          ?<SA_Tool />
-          :<h1 />
-        }
-        {this.state.Roster
-          ?<div>
-            <h1 style ={{textAlign:'center'}}>Roster</h1>
-            <Roster_Tool />
-          </div>
-          :<h1 />
-        }
-        {this.state.AddAdmin
-          ?<ManageAdmin />
-          :<h1 />
-        }
-        {this.state.Courses
-          ?<GateKeeper />
-          :<h1 />
-        }  
+        <MuiThemeProvider>
+          <Paper zDepth = {2} style = {{padding:'20px'}}>
+            {this.state.Project
+              ?<PendingApplication />
+              :<div />
+            }
+            {this.state.Student
+              ?<SA_Tool />
+              :<h1 />
+            }
+            {this.state.Roster
+              ?<div>
+                <h1 style ={{textAlign:'center'}}>Roster</h1>
+                <Roster_Tool />
+              </div>
+              :<h1 />
+            }
+            {this.state.AddAdmin
+              ?<ManageAdmin />
+              :<h1 />
+            }
+            {this.state.Courses
+              ?<div>
+                <h1 style = {{textAlign:'center'}}>Manage Courses and GateKeepers</h1>
+                <ManageCourses />
+                <GateKeeper />
+              </div>
+              :<h1 />
+            }
+          </Paper>
+        </MuiThemeProvider>  
         <AdminRoute user={userStore} path = "/admin/projectApplication/Denied" component={DeniedApplication} />
-         <div>
+         <div style = {{paddingTop:'20px'}}>
           <MuiThemeProvider>
             <Tabs inkBarStyle ={{color:Primary}}>
               <Tab label = "Project Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showProject}/>

@@ -47,16 +47,15 @@ class ProjectApprovalCard extends Component {
   }
 
   addAdvisors(application) {
-    console.log(application);
     let advisorRef = firebase.database().ref('Advisor');
     let userRef = firebase.database().ref('Users');
     advisorRef.push({
-      email:application.contactEmail,
-      name:application.contactName,
+      email:application.leadFacultyEmail,
+      name:application.leadFacultyName,
       team:application.teamName
     });
     userRef.push({
-      email:application.contactEmail,
+      email:application.leadFacultyEmail,
       role:"advisor",
     });
   }
@@ -96,8 +95,8 @@ class ProjectApprovalCard extends Component {
     ];
    let data = Object.keys(this.state.application).map((key) => {
       return(
-        <div>
-          <h3>{key}</h3>
+        <div key = {key}>
+          <h3>{key.split(/(?=[A-Z])/).join(" ")}</h3>
           <p>{this.state.application[key]}</p>
         </div>
       );

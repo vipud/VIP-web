@@ -9,12 +9,14 @@ import FlatButton from 'material-ui/FlatButton';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiButton from '../MuiButton';
-import Primary, {DeleteColor} from '../../Theme';
+import Primary, { Secondary, DeleteColor} from '../../Theme';
 //Style sheet
 import '../../style/projectpage.css';
 import {Link} from 'react-router-dom';  
 //Firebase init
 import firebase from "../../firebase";
+
+import VIP from '../../assets/Vip_logo.png';
 
 class ProjectPage extends Component {
   constructor(props) {
@@ -52,14 +54,14 @@ class ProjectPage extends Component {
   }
 
   render() {
-    let data = Object.keys(this.state.data).map((key) => {
-      if(this.state.data[key]==='' || key === 'logo'){
+    let data = Object.keys(this.state.data).reverse().map((key) => {
+      if(this.state.data[key]==='' || key === 'logo' || key === 'teamName' || key === 'subtitle'){
         return;
       }
       return(
-        <div>
-          <h3>{key.split(/(?=[A-Z])/).join(" ")}</h3>
-          <p>{this.state.data[key]}</p>
+        <div key={key}>
+          <h2 style = {{color:Primary, marginBottom:'50px', marginTop:'50px'}}><strong>{key.charAt(0).toUpperCase() + key.slice(1).split(/(?=[A-Z])/).join(" ")}</strong></h2>
+          <h4>{this.state.data[key]}</h4>
         </div>
       );
     })
@@ -78,25 +80,23 @@ class ProjectPage extends Component {
             <Paper zDepth={2} style = {{margin:'20px'}}>
               {this.state.data &&
               <div style = {{padding:'20px'}}>
-                <h1 className = "title">{this.state.data.title || this.state.data.teamName}</h1>
-                <h3 className = "title">{this.state.data.subtitle}</h3>
-                {this.state.data.logo &&
-                  <img src = {this.state.data.logo} style = {{maxWidth:'500px', float:'right'}}/>
-                }
+                <h1 className = "title" style = {{color:Secondary}}><strong>{this.state.data.title || this.state.data.teamName}</strong></h1>
+                <h2 className = "title" style = {{color:Secondary}}><strong>{this.state.data.subtitle}</strong></h2>
+                <img src = {this.state.data.logo || VIP} style = {{maxWidth:'500px', float:'right'}}/>
                 {data}
                 {(userStore.authed === true) &&
                   <div className="row">
                   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                     <div>
                     <Link to={`${this.state.fbkey}/apply`}>
-                      <RaisedButton label = "apply" id = "applyButton" backgroundColor = {Primary} style = {{float: "right", margin:"10"}}/>
+                      <RaisedButton label = "apply" id = "applyButton" backgroundColor = {Primary} style = {{float: "right", margin:"10px"}}/>
                     </Link>
                     </div>
                   </MuiThemeProvider>
                   </div>
                 }
                 {(userStore.role === "admin")
-                    ?<MuiButton label = "Sunset Team" color = {DeleteColor} style = {{margin:"10"}} onClick = {this.handleSunset}/>
+                    ?<MuiButton label = "Sunset Team" color = {DeleteColor} style = {{margin:"10px"}} onClick = {this.handleSunset}/>
                     :<h1 />
                   }
                   <Dialog

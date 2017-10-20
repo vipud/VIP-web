@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import ChangeSemester from './ChangeSemester';
 import PendingApplication from './TeamApplication/PendingApplication';
 import DeniedApplication from './TeamApplication/DeniedApplication';
 import ManageAdmin from './ManageAdmin';
@@ -7,6 +8,7 @@ import GateKeeper from './GateKeeper/ManageGateKeeper';
 import SA_Tool from './StudentApplication/StudentApplicationTool';
 import Roster_Tool from './RosterTool/RosterTool';
 import userStore from '../../stores/UserStore';
+import Divider from 'material-ui/Divider';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -28,6 +30,7 @@ class AdminPage extends Component {
     this.showStudent = this.showStudent.bind(this);
     this.showAdminTool = this.showAdminTool.bind(this);
     this.showCourses = this.showCourses.bind(this);
+    this.showSemester = this.showSemester.bind(this);
   }
   showStudent() {
     this.setToFalse();
@@ -59,13 +62,20 @@ class AdminPage extends Component {
       Courses:true
     })
   }
+  showSemester() {
+    this.setToFalse();
+    this.setState({
+      Semester:true
+    })
+  }
   setToFalse() {
     this.setState({
       Project:false,
       Student:false,
       Roster:false,
       AddAdmin:false,
-      Courses:false
+      Courses:false,
+      Semester:false
     });
   }
 
@@ -74,31 +84,32 @@ class AdminPage extends Component {
       <div>
         <MuiThemeProvider>
           <Paper zDepth = {2} style = {{padding:'20px'}}>
-            {this.state.Project
-              ?<PendingApplication />
-              :<div />
+            {this.state.Project &&
+              <PendingApplication />
             }
-            {this.state.Student
-              ?<SA_Tool />
-              :<h1 />
+            {this.state.Student &&
+              <SA_Tool />
             }
-            {this.state.Roster
-              ?<div>
+            {this.state.Roster &&
+              <div>
                 <h1 style ={{textAlign:'center'}}>Roster</h1>
                 <Roster_Tool />
               </div>
-              :<h1 />
             }
-            {this.state.AddAdmin
-              ?<ManageAdmin />
-              :<h1 />
+            {this.state.AddAdmin &&
+              <ManageAdmin />
             }
-            {this.state.Courses
-              ?<div>
+            {this.state.Courses &&
+              <div>
                 <h1 style = {{textAlign:'center'}}>Manage GateKeepers</h1>
                 <GateKeeper />
               </div>
-              :<h1 />
+            }
+            {this.state.Semester &&
+              <div>
+                <h1 style = {{textAlign:'center'}}>Semester</h1>
+                <ChangeSemester />
+              </div>
             }
           </Paper>
         </MuiThemeProvider>  

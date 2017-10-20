@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import Small_logo from '../assets/small_logo.png';
 import '../style/Footer.css';
 
@@ -8,7 +9,7 @@ class Footer extends Component {
     return (
       <div className = 'footer'>
         <div id = 'line' />
-          <img src = {Small_logo} alt = "ASU footer" className = "image-footer" />
+          <img src = {Small_logo} alt = "footer" className = "image-footer" />
       </div>
     );
   }

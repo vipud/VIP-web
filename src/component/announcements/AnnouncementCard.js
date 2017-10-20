@@ -4,9 +4,9 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
+import Primary,{ Secondary, DeleteColor} from '../../Theme';
 
 import { Link } from 'react-router-dom';
-
 
 const style = {
   card: {
@@ -44,6 +44,7 @@ class AnnouncementCard extends Component {
               <CardHeader
                 title={<h4>{this.props.announcement.title}</h4>}
                 subtitle={new Date(this.props.announcement.startDate).toDateString()}
+                titleColor={Secondary}
                 actAsExpander={false}
                 showExpandableButton={false}
                 titleStyle = {style.cardHeader}

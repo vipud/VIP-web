@@ -15,7 +15,7 @@ import ResourceMenu from './resource/ResourceMenu';
 import Full_logo from '../assets/full_logo.png';
 import Seal from '../assets/seal.png';
 import Small_logo from '../assets/small_logo.png';
-import Vip_logo from '../assets/Vip_logo.png';
+import VIP_logo_large from '../assets/VIP_logo_large.png';
 import '../style/Header.css';
 
 @observer

@@ -21,7 +21,6 @@ class CourseList extends Component {
     this.addCourse = this.addCourse.bind(this);
     this.suffixChange = this.suffixChange.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
-    this.findGateKeeper = this.findGateKeeper.bind(this);
   }
   
   componentDidMount() {
@@ -29,7 +28,7 @@ class CourseList extends Component {
       this.setState({courses:snap.val()});
     });
     this.setState({
-      team:this.props.team.teamNamea,
+      team:this.props.team.teamName,
     });
   }
   
@@ -42,16 +41,6 @@ class CourseList extends Component {
     });
   }
 
-  findGateKeeper(key) {
-    firebase.database().ref('GateKeeper').once('value').then((snap) => {
-      Object.keys(snap.val()).forEach((i) =>{
-        if(snap.val()[i].department ===this.state.courses[this.state.team][key].department) {
-          console.log(snap.val()[i].email);
-        }
-      })
-    });
-  }
-
   suffixChange(e) {
     this.setState({
       suffix:(e.target.value).toUpperCase()
@@ -61,7 +50,8 @@ class CourseList extends Component {
   addCourse() {
     firebase.database().ref(`Courses/${this.state.team}`).push({
       course:this.state.items[this.state.value]+this.state.suffix,
-      department:this.state.suffix
+      department:this.state.suffix,
+      level:this.state.items[this.state.value].split("")[3]
     });
   }
 
@@ -79,9 +69,11 @@ class CourseList extends Component {
     return(
       <MuiThemeProvider>
         <div>
+          {this.state.team &&
+          <div>
           <h2 style = {{textAlign:'center'}}>{this.state.team} course list</h2>
           <div>
-            {this.state.courses && this.state.courses[this.state.team]
+            {this.state.courses && this.state.team && this.state.courses[this.state.team]
               ?<table className="table">
                 <thead>
                   <tr>
@@ -91,7 +83,7 @@ class CourseList extends Component {
                 </thead>
                 <tbody>
                   {Object.keys(this.state.courses[this.state.team]).map((key) => {
-                    return (<tr key = {key} onClick = {() => this.findGateKeeper(key)}>
+                    return (<tr key = {key}>
                       <th>{this.state.courses[this.state.team][key].course}</th>
                       <th>{this.state.courses[this.state.team][key].department}</th>
                       <th><i className ="glyphicon glyphicon-remove" style = {{cursor:"pointer"}} id = {key} onClick = {this.handleRemove}/></th>
@@ -107,7 +99,9 @@ class CourseList extends Component {
           </SelectField>
           
             <TextField hintText="Add Suffix" floatingLabelText="Suffix" onChange = {this.suffixChange} maxLength="3" style = {{verticalAlign:'top'}}/>
-            <FlatButton label = "submit" onClick = {this.addCourse} style = {{verticalAlign:'bottom'}}/> 
+            <FlatButton label = "submit" onClick = {this.addCourse} style = {{verticalAlign:'bottom'}}/>
+          </div>
+          } 
         </div>
       </MuiThemeProvider>
     );

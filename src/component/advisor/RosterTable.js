@@ -5,6 +5,7 @@ import fileDownload from 'react-file-download';
 import FlatButton from 'material-ui/FlatButton';
 import firebase from '../../firebase';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import CsvUpload from '../CsvUpload';
 
 
 const { Toolbar, Data: { Selectors } } = require('react-data-grid-addons');
@@ -38,6 +39,16 @@ class RosterTable extends Component {
   componentDidMount() {
       this.createColumns();
       this.createRows();
+  }
+
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps.roster);
+    this.setState({
+      roster:nextProps.roster
+    }, ()=>{
+      this.createColumns();
+      this.createRows();
+    });
   }
 
   exportRoster() {
@@ -203,6 +214,7 @@ class RosterTable extends Component {
                 <FlatButton label = "Delete Selected Student" onClick = {()=>this.handleDeny()}/>
               </div>
             }
+            
           </div>
         </MuiThemeProvider>
       </div>);

@@ -50,10 +50,7 @@ class Number extends Component {
       PreviewMode:Props.PreviewMode,
       Answers:{}
     }
-    this.handleCheck = this.handleCheck.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleNumberChange = this.handleNumberChange.bind(this);
-    this.handleQuestionChange = this.handleQuestionChange.bind(this);
   }
 
   componentDidMount() {
@@ -68,6 +65,16 @@ class Number extends Component {
     } 
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      data: {
+        required: nextProps.data.required,
+        question: nextProps.data.question
+      },
+      Answers:nextProps.answers
+    })
+  }
+
   handleChange(e) {
     let Answers = this.state.Answers;
     Answers[this.props.peer.name] = e.target.value;
@@ -78,18 +85,6 @@ class Number extends Component {
     ()=>{this.props.handleChange(this.state.Answers)});
   }
 
-  handleCheck(e, checked){
-    console.log(checked)
-    this.setState(update(this.state, {
-      data: {
-        required:{
-          $set: checked
-        }
-      },
-    }), () => { // run the function after state changed
-      this.props.updateQuestion(this.props.index, this.state.data)
-    });
-  }
 
   handleNumberChange(e) {
     this.setState({
@@ -97,63 +92,23 @@ class Number extends Component {
     });
   }
 
-  handleQuestionChange(e) {
-    let text = e.target.value
-    this.setState(update(this.state, {
-      data: {
-        question:{
-          $set: text
-        }
-      },
-    }), () => { // run the function after state changed
-      this.props.updateQuestion(this.props.index, this.state.data)
-    });
-  }
 
   
   render() {
     let value;
     if(!!this.props.answers) {
       value = this.props.answers[this.props.peer.name];
+    }else{
+      value = this.state.number;
     }
     return(
       <div>
-        {!this.state.EvalMode &&
-        <MuiThemeProvider>
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              {PeerReviewStore.EditMode 
-              ? <TextField
-                  value = {this.state.data.question}
-                  onChange = {this.handleQuestionChange}
-                  floatingLabelStyle={style.floatingLabelStyle}
-                  underlineFocusStyle = {style.underlineStyle}
-                  floatingLabelText="Question"
-                  fullWidth={true}
-                />
-              : <h3>{this.state.data.question}</h3>
-              }
-            </div>
-            <div className="panel-body">
-              <div  style = {style.edit}>
-                <TextField type="number" value = {this.state.number} onChange = {this.handleNumberChange} style = {{float:'left', width:'100px'}} id = "number" />
-                {
-                PeerReviewStore.EditMode  &&
-                <Checkbox checked={this.state.data.required} label = "Check If Required" labelPosition="left" onCheck={this.handleCheck} style = {{ paddingTop:'15px', width:'180px', float:'right'}} /> 
-                }
-              </div>
-            </div>
-            </div>
-          </MuiThemeProvider>
-        }
           <div>
-            {this.state.EvalMode &&
             <MuiThemeProvider>
               <div  style = {style.edit}>
-                <TextField type="number" defaultValue = {value} onChange = {this.handleChange} style = {{float:'left', width:'100px'}} id = "number" />
+                <TextField type="number" value = {value} onChange = {this.handleChange} style = {{float:'left', width:'100px'}} id = "number" />
               </div>
             </MuiThemeProvider>
-            }
           </div>
         </div>
     );

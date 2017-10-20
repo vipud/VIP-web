@@ -1,5 +1,3 @@
-import React from 'react';
-
 //accepted list of emails
 const university = "University of Delaware";
 const validDomain = "udel.edu";

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import RosterTable from '../../advisor/RosterTable';
+import _ from 'lodash';
 import firebase from '../../../firebase';
+import CsvUpload from '../../CsvUpload';
 
 const studentRef = 'Students';
 
@@ -10,32 +12,46 @@ class RosterTool extends Component {
     this.state = {
       roster:'',
       semester:'',
-      currentRoster:''
     }
     this.generateRoster = this.generateRoster.bind(this);
   }
 
   componentDidMount() {
     let fbRef = firebase.database().ref(`${studentRef}`);
-    fbRef.on('value', (snap) => {
-      this.setState({
-        roster:snap.val(),
+    fbRef.on('value', (snapRoster) => {
+      firebase.database().ref(`Semester`).once('value').then((snapSemester)=>{
+        this.setState({
+          semester:snapSemester.val().current,
+          roster:snapRoster.val(),
+        }, () => this.generateRoster());
+      });
+      let teams = [];
+      firebase.database().ref('Teams/').on('value', (snap)=>{
+        Object.keys(snap.val()).forEach((team)=>{
+          teams.push(snap.val()[team].teamName);
+        });
+        this.setState({
+          teams:teams
+        });
       });
     });
 
-    firebase.database().ref(`Semester`).once('value').then((snap)=>{
-      this.setState({semester:snap.val().current},()=>{this.generateRoster()});
-    });
+    
+
+    
   }
 
   generateRoster() {
     let semesterRoster = {};
-    Object.keys(this.state.roster).forEach((team) => {
-      Object.keys(this.state.roster[team][this.state.semester]).forEach((student)=>{
-        semesterRoster[student] = this.state.roster[team][this.state.semester][student];
+    if(this.state.roster){
+      Object.keys(this.state.roster).forEach((team) => {
+        Object.keys(this.state.roster[team][this.state.semester]).forEach((student)=>{
+          semesterRoster[student] = this.state.roster[team][this.state.semester][student];
+        });
       });
-    });
-    this.setState({currentRoster:semesterRoster});
+      this.setState({currentRoster:semesterRoster});
+    }
+    
   }
 
 
@@ -43,10 +59,10 @@ class RosterTool extends Component {
   render() {
     return (
       <div>
-        {this.state.currentRoster
-        ?<RosterTable roster = {this.state.currentRoster}/>
-        :<h1/>
+        {!_.isEmpty(this.state.currentRoster) && this.state.semester && this.state.roster &&
+          <RosterTable roster = {this.state.currentRoster}/>
         }
+        <CsvUpload />
       </div>
     );
   }

@@ -22,15 +22,22 @@ import PeerReview from './component/peerReview/PeerReview';
 import Projects from './component/projects/Projects';
 import Resource from './component/resource/Resource';
 import Student from './component/student/Student';
-import TestPlot from './component/peerReview/analytics/TestPlot';
+// import TestPlot from './component/peerReview/analytics/TestPlot';
 import { AdminRoute, PublicRoute,PrivateRoute, UnEnrolledRoute, AdvisorRoute, StudentRoute } from './component/Route';
+import Paper from 'material-ui/Paper';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import Primary from './Theme';
 
 injectTapEventPlugin();
 
 
 const NotInTheSystem = () => (
   <div>
-    <h2>Sorry, You are not in the system</h2>
+    <MuiThemeProvider>
+    <Paper zDepth = {1} style = {{padding:'20px'}}>
+      <h4 style={{color: Primary}}>Sorry, we do not have your data in the system. Please contact an administrator or apply for a team.</h4>
+    </Paper>
+    </MuiThemeProvider>
   </div>
 )
 
@@ -50,10 +57,9 @@ class App extends Component {
         userStore.login()
         userStore.fetchUserInfo(user.email, user.displayName, user.photoURL)
         fetchRole(user.email).then(role => {
-          // console.log(role);
           userStore.fetchUserRole(role);
           appStore.finishLoading()
-          if (!sessionStorage.getItem("loggedin")) {
+          if (!sessionStorage.getItem("loggedin")) { //first time login
             this.setState({
               shouldRedirect: true,
               redirectPath: "/" + role.toString()
@@ -95,7 +101,7 @@ class App extends Component {
                 <Route path="/announcement" component={Announcement}/>
                 <Route path="/projects" component={Projects}/>
                 <Route path="/peer-review" component={PeerReview}/>
-                <Route path="/Test-Plot" component={TestPlot}/>
+                {/* <Route path="/Test-Plot" component={TestPlot}/> */}
                 <Route path="/resource/:category" component={Resource}/>
                 <PublicRoute path="/login" authed={userStore.authed} component={LoginPage} />
                 <PrivateRoute path="/dashboard" authed={userStore.authed} component={DashBoard} />
@@ -108,7 +114,6 @@ class App extends Component {
                   <Redirect to={this.state.redirectPath}/>
                 )}
               </div>
-              
             )}
           <Footer />
         </div>

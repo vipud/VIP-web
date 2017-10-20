@@ -6,7 +6,6 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {grey500} from 'material-ui/styles/colors';
-import {debounce} from 'throttle-debounce';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import MuiButton from '../MuiButton';
@@ -14,7 +13,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import { Redirect } from 'react-router-dom';
 import TextField from 'material-ui/TextField';
 import Primary, { Secondary, DeleteColor } from '../../Theme';
-
 
 import firebase from '../../firebase';
 import userStore from '../../stores/UserStore';
@@ -117,7 +115,6 @@ class ResourcePage extends Component {
   onDrop(photos){
     const ref = firebase.storage().ref()
     photos.forEach((photo) => {
-      console.log(photo);
       let photoRef = ref.child("Resource/" + this.state.category + "/" + photo.name);
       photoRef.put(photo)
       .then((snap) => {
@@ -135,7 +132,6 @@ class ResourcePage extends Component {
 	}
 
   updateContent(category){
-    console.log(category)
     firebase.database().ref(`${resourcePath}/${category}`).once('value').then( (snap) => {
 			if (snap.val()) {
 				this.setState({
@@ -185,7 +181,7 @@ class ResourcePage extends Component {
 						<MuiThemeProvider>
 							<div className="panel panel-default">
 								<div className="panel-heading">
-									<h4>{this.state.category.split("_").join(" ").toUpperCase()}</h4>
+									<h4 style={{coler:Secondary}}>{this.state.category.split("_").join(" ").toUpperCase()}</h4>
 								</div>
 								<div className="panel-body">
 									<TextField

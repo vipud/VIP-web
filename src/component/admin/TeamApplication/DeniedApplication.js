@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-
 import firebase from '../../../firebase';
-import {Link} from 'react-router-dom';
 import MuiButton from '../../MuiButton';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Primary, {DeleteColor} from '../../../Theme'
+import {Secondary, DeleteColor} from '../../../Theme'
 import {
   Table,
   TableBody,

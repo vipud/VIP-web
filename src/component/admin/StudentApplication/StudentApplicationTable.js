@@ -126,7 +126,8 @@ class StudentApplicationTable extends Component {
   handleDeny() {
     let keys = Object.keys(this.state.roster);
     this.state.selectedIndexes.forEach((i) => {
-      this.handleRemoveFb(keys[i]);
+    firebase.database().ref(`RejectedStudents/${this.state.rows[i].teamName}/${this.state.rows[i].semester}`).child(keys[i]).set(this.state.rows[i]);    
+      this.handleRemoveFb(keys[i], i);
     });
     this.handleRemoveRow();
   }
@@ -144,7 +145,7 @@ class StudentApplicationTable extends Component {
     })
   }
 
-  handleRemoveFb(uuid) {
+  handleRemoveFb(uuid, index) {
     firebase.database().ref('StudentApplication').child(uuid).remove();
   }
 

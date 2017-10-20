@@ -75,7 +75,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "deploy": "cp -r ./build/. ../ui-vip-firebase/public && cd ../ui-vip-firebase/ && firebase deploy --only hosting"
+    "deploy": "cp -r ./build/. ../ud-vip-firebase/public && cd ../ud-vip-firebase/ && firebase deploy --only hosting"
   },
   "jest": {
     "collectCoverageFrom": [

@@ -49,9 +49,11 @@ class CsvUpload extends Component {
       reader.readAsText(file);
       reader.onload = function () {
         csv().fromString(reader.result).on('json', (jsonObj)=>{
-          jsonObj['name'] = jsonObj["First Name"] + jsonObj["Last Name"];
-          jsonObj['email'] = jsonObj["UdelID"] + "@udel.edu";
+          jsonObj['name'] = jsonObj["Name"];
+          jsonObj['email'] = jsonObj["Email"];
           jsonObj['teamName'] = team;
+          delete jsonObj["Name"];
+          delete jsonObj["Email"];
           firebase.database().ref(`Students/${team}/${semester}`).push(jsonObj);
           firebase.database().ref('Users').push({
             email:jsonObj.email,

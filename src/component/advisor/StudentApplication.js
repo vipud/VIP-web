@@ -55,7 +55,6 @@ class Application extends Component {
       }
     });
   }
-
   handleClick() {
     this.setState((prevState)=>({Reject:!prevState.Reject}));
   }
@@ -66,7 +65,7 @@ class Application extends Component {
         {this.state.Reject
         ?<div>
           {Object.keys(this.state.Applications).length !== 0
-            ?<StudentApplicationTable roster = {this.state.Applications} />
+            ?<StudentApplicationTable roster = {this.state.Applications}/>
             :<h1 style = {{textAlign:'center'}}>No Applications</h1>
           }
         </div>

@@ -70,6 +70,7 @@ class ProjectApplication extends Component{
     }
 
     handleChange = (event) => {
+    console.log(this.state.data);
     var str = event.target.id;
     var res = str.split("-");
     var key = res[2].charAt(0).toLowerCase() + res[2].slice(1);
@@ -82,12 +83,13 @@ class ProjectApplication extends Component{
      var res=str.split(",");
      this.setState({
         topics : res,
-      })
+      });
     }
     else{
         console.log(obj);
         this.setState(obj);
     }
+    console.log(obj);
   }
 
 

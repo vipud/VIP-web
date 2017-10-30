@@ -49,15 +49,20 @@ class ProjectApprovalCard extends Component {
   addAdvisors(application) {
     let advisorRef = firebase.database().ref('Advisor');
     let userRef = firebase.database().ref('Users');
-    advisorRef.push({
-      email:application.leadFacultyEmail,
-      name:application.leadFacultyName,
-      team:application.teamName
-    });
-    userRef.push({
-      email:application.leadFacultyEmail,
-      role:"advisor",
-    });
+    let advisors = leadFacultyEmail.split(',');
+    let advisorNames = leadFacultyName.split(',');
+    for(let i = 0; i<advisors.length; i++ ){
+      advisorRef.push({
+        email:advisors[i],
+        name:advisorNames[i],
+        team:application.teamName
+      });
+      userRef.push({
+        email:advisors[i],
+        role:"advisor",
+      });
+    }
+    
   }
 
   handleReject = () => {

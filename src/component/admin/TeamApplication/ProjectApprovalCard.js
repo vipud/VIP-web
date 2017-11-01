@@ -59,7 +59,7 @@ class ProjectApprovalCard extends Component {
       });
       userRef.push({
         email:advisors[i],
-        role:"advisor",
+        role:"advisor", 
       });
     }
     

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardActions, CardMedia, CardTitle, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import Vip_logo from '../../assets/Vip_logo.png';
+import Vip_logo from '../../assets/viplogo.png';
 import Primary, {Secondary} from '../../Theme';
 
 import { Link, Route } from 'react-router-dom';
@@ -38,13 +38,13 @@ const style = {
     textOverflow: "ellipsis",
     height: "140px"
   }
-  
+
 }
 
 class ProjectCard extends Component {
     constructor(props) {
       super(props);
-      
+
     }
     render () {
       return (
@@ -74,7 +74,7 @@ class ProjectCard extends Component {
                 }
               </CardText>
               <CardActions>
-                <Link to={`projects/${this.props.fbkey}`}><FlatButton label="Learn more" /></Link>                
+                <Link to={`projects/${this.props.fbkey}`}><FlatButton label="Learn more" /></Link>
               </CardActions>
           </Card>
           </div>

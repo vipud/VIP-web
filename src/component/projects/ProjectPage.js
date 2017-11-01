@@ -12,11 +12,11 @@ import MuiButton from '../MuiButton';
 import Primary, { Secondary, DeleteColor} from '../../Theme';
 //Style sheet
 import '../../style/projectpage.css';
-import {Link} from 'react-router-dom';  
+import {Link} from 'react-router-dom';
 //Firebase init
 import firebase from "../../firebase";
 
-import VIP from '../../assets/Vip_logo.png';
+import VIP from '../../assets/viplogo.png';
 
 class ProjectPage extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class ProjectPage extends Component {
   }
 
   componentDidMount() {
-    
+
     firebase.database().ref(`Teams/${this.state.fbkey}`).once('value').then( (snap) => {
       let faculty = {};
       Object.keys(snap.val()).forEach((key)=>{

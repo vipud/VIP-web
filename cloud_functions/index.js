@@ -46,7 +46,7 @@ exports.studentApplicationNotice = functions.database.ref('/StudentApplication_R
                 subject: 'A new student application is submitted'
               }],
               from: {
-                email: 'noreply@em.hzhao.me'
+                email: 'noreply@emailvip.udel.vip'
               },
               content: [{
                 type: 'text/html',
@@ -102,7 +102,7 @@ exports.teamApplicationNotice = functions.database.ref('/TeamApplication_Raw_Dat
                 subject: 'A new team application is submitted'
               }],
               from: {
-                email: 'noreply@em.hzhao.me'
+                email: 'noreply@emailvip.udel.vip'
               },
               content: [{
                 type: 'text/html',
@@ -156,7 +156,7 @@ exports.teamApproval = functions.database.ref('/Teams/{uuid}')
             subject: 'Your team application is approved'
           }],
           from: {
-            email: 'noreply@em.hzhao.me'
+            email: 'noreply@emailvip.udel.vip'
           },
           // content: [{
           //   type: 'text/html',
@@ -274,7 +274,7 @@ exports.studentAddPending = functions.database.ref('/Student_Add_Pending/{teamna
             subject: `Your application of team ${teamname} is approved`
           }],
           from: {
-            email: 'noreply@em.hzhao.me'
+            email: 'noreply@emailvip.udel.vip'
           },
           'template_id': functions.config().sendgrid.student_accept_notice,
         }
@@ -321,7 +321,7 @@ exports.studentAddPending = functions.database.ref('/Student_Add_Pending/{teamna
             subject: `A new student application is accepted for ${teamname}`
           }],
           from: {
-            email: 'noreply@em.hzhao.me'
+            email: 'noreply@emailvip.udel.vip'
           },
           content: [{
             type: 'text/html',

@@ -71,7 +71,7 @@ class App extends Component {
           appStore.finishLoading()
           this.setState({
             shouldRedirect: true,
-            redirectPath: "/not_in_system"
+            redirectPath: "/"
           })
         })
       } else {

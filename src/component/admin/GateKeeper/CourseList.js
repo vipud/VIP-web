@@ -15,14 +15,14 @@ class CourseList extends Component {
       team:'',
       courses:'',
       value:0,
-      items:["VIP194","VIP294","VIP394","VIP494"],
+      items:["CIS","ECE"],
       suffix: '',
     }
     this.addCourse = this.addCourse.bind(this);
     this.suffixChange = this.suffixChange.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
   }
-  
+
   componentDidMount() {
     firebase.database().ref(`Courses`).on('value',(snap) => {
       this.setState({courses:snap.val()});
@@ -31,7 +31,7 @@ class CourseList extends Component {
       team:this.props.team.teamName,
     });
   }
-  
+
   componentWillReceiveProps(nextProps) {
     firebase.database().ref(`Courses`).on('value',(snap) => {
       this.setState({courses:snap.val()});
@@ -49,14 +49,14 @@ class CourseList extends Component {
 
   addCourse() {
     firebase.database().ref(`Courses/${this.state.team}`).push({
-      course:this.state.items[this.state.value]+this.state.suffix,
-      department:this.state.suffix,
-      level:this.state.items[this.state.value].split("")[3]
+      course:this.state.suffix,
+      department:this.state.items[this.state.value],
+      level:"467"
     });
   }
 
   handleChange = (event, index, value) => this.setState({value:value});
-  
+
   handleRemove(e) {
     let key = e.target.id;
     firebase.database().ref(`Courses/${this.state.team}/${key}`).remove();
@@ -97,11 +97,11 @@ class CourseList extends Component {
           <SelectField value = {this.state.value} onChange = {this.handleChange} style = {{verticalAlign:'bottom'}}>
             {MenuItems}
           </SelectField>
-          
-            <TextField hintText="Add Suffix" floatingLabelText="Suffix" onChange = {this.suffixChange} maxLength="3" style = {{verticalAlign:'top'}}/>
+
+            <TextField hintText="Add Suffix" floatingLabelText="Suffix" onChange = {this.suffixChange} maxLength="10" style = {{verticalAlign:'top'}}/>
             <FlatButton label = "submit" onClick = {this.addCourse} style = {{verticalAlign:'bottom'}}/>
           </div>
-          } 
+          }
         </div>
       </MuiThemeProvider>
     );

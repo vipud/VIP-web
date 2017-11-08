@@ -27,7 +27,7 @@ const style = {
     textOverflow: "ellipsis",
     height: "330px"
   }
-  
+
 }
 
 class AnnouncementCard extends Component {
@@ -44,7 +44,7 @@ class AnnouncementCard extends Component {
               <CardHeader
                 title={<h4>{this.props.announcement.title}</h4>}
                 subtitle={new Date(this.props.announcement.startDate).toDateString()}
-                titleColor={Secondary}
+                titleColor={Primary}
                 actAsExpander={false}
                 showExpandableButton={false}
                 titleStyle = {style.cardHeader}
@@ -64,7 +64,7 @@ class AnnouncementCard extends Component {
       )
     }
 }
-  
+
 AnnouncementCard.propTypes = {
   announcement : PropTypes.shape({
     content : PropTypes.string,

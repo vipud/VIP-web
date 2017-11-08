@@ -85,7 +85,7 @@ class StudentApplication extends Component{
           });
           data['course'] = '';
           data['credits'] = 1;
-          data['returning'] = false;
+          data['returning'] = "false";
           this.setState({
             questionsArray: snap.val(),
             data:data,
@@ -108,7 +108,7 @@ class StudentApplication extends Component{
     handleCheck(){
       let checked = this.state.returning;
       let obj = this.state.data;
-      obj['returning'] = !checked;
+      obj['returning'] = !checked ? "true" : "false";
       this.setState({
         data:obj,
         returning:!checked

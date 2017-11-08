@@ -121,7 +121,8 @@ class AdminPage extends Component {
               <Tab label = "Student Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showStudent}/>
               <Tab label = "Rosters" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showRoster}/>
               <Tab label = "Manage Admin" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showAdminTool}/>
-              <Tab label = "Manage GateKeeper" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showCourses}/>         
+              <Tab label = "Manage GateKeeper" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showCourses}/>
+              <Tab label = "Change Semester" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showSemester}/>
             </Tabs>
           </MuiThemeProvider>
         </div>

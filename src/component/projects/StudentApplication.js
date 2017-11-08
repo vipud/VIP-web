@@ -63,7 +63,7 @@ class StudentApplication extends Component{
         });
 
         firebase.database().ref('Semester').once('value').then((snap)=>{
-          data['semester'] = snap.val().current;
+          data['semester'] = snap.val().application;
         });
         
         firebase.database().ref(`FormQuestions/${db}`).once('value').then( (snap) => {

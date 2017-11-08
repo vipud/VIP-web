@@ -108,7 +108,7 @@ class StudentApplication extends Component{
     handleCheck(){
       let checked = this.state.returning;
       let obj = this.state.data;
-      obj['returning'] = !checked ? "true" : "false";
+      obj['returning'] = (!checked).toString();
       this.setState({
         data:obj,
         returning:!checked
@@ -258,13 +258,11 @@ class StudentApplication extends Component{
                 </div> 
                 :<h1/>
                   }
-                  {this.state.level &&
                     <SelectField floatingLabelText="Level" value={this.state.levelValue} onChange={this.handleLevelChange}>
                       {this.state.level.map((key, index) => {
                         return <MenuItem value = {index} primaryText = {key} key = {key}/>
                       })}
                     </SelectField>
-                  }
                   <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card><br/>      

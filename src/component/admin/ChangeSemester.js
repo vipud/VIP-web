@@ -28,7 +28,8 @@ class ChangeSemester extends Component {
     firebase.database().ref('Semester').on('value', (snap)=>{
       this.setState({
         current:snap.val().current,
-        past:snap.val().past
+        past:snap.val().past,
+        application:snap.val().application
       });
     });
   }
@@ -71,6 +72,7 @@ class ChangeSemester extends Component {
     return(
       <div>
         <h3 style = {{textAlign:'center'}}>Current Semester : {this.state.current}</h3>
+        <h3 style = {{textAlign:'center'}}>Application Semester : {this.state.application}</h3>
         <MuiThemeProvider>
           <div>
             {this.state.past &&

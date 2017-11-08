@@ -72,7 +72,7 @@ class ProjectPage extends Component {
         textOverflow:"ellipsis",
         color: Secondary,
         boxShadow: "0 1px 1px hsla(0,0%,100%,.05) inset",
-        background: "hsla(0,0%,100%,.3)",
+        background: "hsla(0,0%,0%,.6)",
         textShadow: "0 0.03em 0.05em black"
       }
     };

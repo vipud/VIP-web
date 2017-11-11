@@ -105,7 +105,7 @@ class App extends Component {
                 <Route path="/resource/:category" component={Resource}/>
                 <PublicRoute path="/login" authed={userStore.authed} component={LoginPage} />
                 <PrivateRoute path="/dashboard" authed={userStore.authed} component={DashBoard} />
-                <UnEnrolledRoute path="/not_in_system" user={userStore} component={NotInTheSystem} />
+                {/* <UnEnrolledRoute path="/not_in_system" user={userStore} component={NotInTheSystem} /> */}
                 <AdminRoute path="/admin" user={userStore} component={AdminPage}/>
                 <AdvisorRoute path="/advisor" user={userStore} component={Advisor} />
                 <StudentRoute path='/student' user={userStore} component={Student} />

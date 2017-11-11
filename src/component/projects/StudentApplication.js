@@ -13,6 +13,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import SelectField from 'material-ui/SelectField';
+import Checkbox from 'material-ui/Checkbox';
 
 import {checkEmpty} from '../../Validation';
 import Primary, {university} from '../../Theme';
@@ -28,9 +29,9 @@ const style = {
 
 const styles = {
   radioButton:{
-    display:"inline-block", 
+    display:"inline-block",
     width: '70px',
-    marginLeft: '35px'
+    marginLeft: '0px'
   },
 };
 
@@ -45,12 +46,17 @@ class StudentApplication extends Component{
         error:{},
         courses:'',
         semester:'',
-        creditOptions:[],
+        creditOptions:[1,2],
+        level:["Freshman", "Sophomore", "Junior", "Senior"],
+        returning:false,
         value:"default",
+        levelValue:0,
         notIncluded:['fbkey', 'errorText','error','other', 'course', 'credits']
       };
-      this.handleMenuChange = this.handleMenuChange.bind(this);    
+      this.handleMenuChange = this.handleMenuChange.bind(this);
       this.handleCreditChange = this.handleCreditChange.bind(this);
+      this.handleCheck = this.handleCheck.bind(this);
+      this.handleLevelChange = this.handleLevelChange.bind(this);
     }
 
     componentDidMount() {
@@ -63,11 +69,11 @@ class StudentApplication extends Component{
         });
 
         firebase.database().ref('Semester').once('value').then((snap)=>{
-          data['semester'] = snap.val().current;
+          data['semester'] = snap.val().application;
         });
-        
+
         firebase.database().ref(`FormQuestions/${db}`).once('value').then( (snap) => {
-          
+
           let empty = {};
           let notIncluded = this.state.notIncluded;
           Object.keys(snap.val()).forEach((i)=>{
@@ -78,7 +84,8 @@ class StudentApplication extends Component{
             }
           });
           data['course'] = '';
-          data['credits'] = '';
+          data['credits'] = 1;
+          data['returning'] = "false";
           this.setState({
             questionsArray: snap.val(),
             data:data,
@@ -86,7 +93,7 @@ class StudentApplication extends Component{
             notIncluded:notIncluded
           });
         });
-        
+
         firebase.database().ref(`Courses`).on('value', (snap) => {
           this.setState({courses:snap.val()});
         });
@@ -95,6 +102,16 @@ class StudentApplication extends Component{
     getdata =(childdata) =>{
       this.setState({
         teamLogo: childdata,
+      });
+    }
+
+    handleCheck(){
+      let checked = this.state.returning;
+      let obj = this.state.data;
+      obj['returning'] = (!checked).toString();
+      this.setState({
+        data:obj,
+        returning:!checked
       });
     }
 
@@ -108,28 +125,10 @@ class StudentApplication extends Component{
 
     handleMenuChange(event, index, value) {
       let obj  = this.state.data;
-      let creditOptions = [1];
-      let credit = 1;
-      let level = (value === 'default') ? -1 :this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[value]].level;
-       
-      if(level === '3') {
-        creditOptions = [1,2];
-        credit = '';
-      }else if(level === '4'){
-        creditOptions = [2];
-        credit = 2;
-      }else if(level === -1){
-        creditOptions = []
-      }
-      if(value !== 'default') {
-        obj['course'] = this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[value]].course
-        obj['credits'] = credit;
-      }
+      obj['course'] = this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[value]].course;
       this.setState({
         value:value,
         data:obj,
-        creditOptions:creditOptions,
-        credit:credit
       });
     }
 
@@ -148,12 +147,24 @@ class StudentApplication extends Component{
       })
     }
     else {
-        this.setState(obj);
+        this.setState({
+          data:obj
+        });
     }
   }
 
+  handleLevelChange(event, index){
+    let level = this.state.level;
+    let obj = this.state.data;
+    obj["level"] = this.state.level[index];
+    this.setState({
+      levelValue:index,
+      data:obj
+    });
+  }
+
   firebasewrite = () => {
-    
+
     let empty = checkEmpty(this.state.error, this.state.data, this.state.data.email, this.state.notIncluded);
     console.log(empty[0]);
     if(empty[0]) {
@@ -174,10 +185,9 @@ class StudentApplication extends Component{
       );
       }
       console.log("ran");
-      
+
       this.setState({
           id:'',
-          level: '',
           program: '',
           gradeType: '',
           name: '',
@@ -191,6 +201,7 @@ class StudentApplication extends Component{
 
       });
     }
+    console.log(this.state.data);
     this.setState({
       errorText:empty[2],
       error:empty[1]
@@ -206,7 +217,7 @@ class StudentApplication extends Component{
               <Card>
                 <CardTitle title={this.state.title + ' Application Form'} style={{textAlign:"center"}} />
                   <div className="row" style={{position:"relative", left:"43%"}}>
-                  {this.state.questionsArray 
+                  {this.state.questionsArray
                   ? (Object.keys(this.state.questionsArray).map((id) => {
                     if(questionsArray[id].id==="email") {
                       return(
@@ -225,7 +236,7 @@ class StudentApplication extends Component{
                       errorText={this.state.error[questionsArray[id].id]}
                       onChange={ this.handleChange}/><br/>
                   </div>)}))
-                    : (<h2>Loading..</h2>) }    
+                    : (<h2>Loading..</h2>) }
                 <br/>
                 {this.state.courses[this.state.title]
                 ?<div>
@@ -244,12 +255,17 @@ class StudentApplication extends Component{
                     ))
                     }
                   </RadioButtonGroup>
-                </div> 
+                </div>
                 :<h1/>
                   }
+                    <SelectField floatingLabelText="Level" value={this.state.levelValue} onChange={this.handleLevelChange}>
+                      {this.state.level.map((key, index) => {
+                        return <MenuItem value = {index} primaryText = {key} key = {key}/>
+                      })}
+                    </SelectField>
+                  <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card><br/>
-                       
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                 <div style={{margin: 'auto',textAlign: 'center'}}>
                   <RaisedButton label="Apply"  style={style} backgroundColor={Primary} onClick={this.firebasewrite}

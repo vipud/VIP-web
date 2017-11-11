@@ -5,6 +5,7 @@ import PendingApplication from './TeamApplication/PendingApplication';
 import DeniedApplication from './TeamApplication/DeniedApplication';
 import ManageAdmin from './ManageAdmin';
 import GateKeeper from './GateKeeper/ManageGateKeeper';
+import Courses from './GateKeeper/ManageCourses';
 import SA_Tool from './StudentApplication/StudentApplicationTool';
 import Roster_Tool from './RosterTool/RosterTool';
 import userStore from '../../stores/UserStore';
@@ -101,6 +102,8 @@ class AdminPage extends Component {
             }
             {this.state.Courses &&
               <div>
+                <h1 style = {{textAlign:'center'}}>Manage Courses</h1>
+                <Courses />
                 <h1 style = {{textAlign:'center'}}>Manage GateKeepers</h1>
                 <GateKeeper />
               </div>
@@ -112,7 +115,7 @@ class AdminPage extends Component {
               </div>
             }
           </Paper>
-        </MuiThemeProvider>  
+        </MuiThemeProvider>
         <AdminRoute user={userStore} path = "/admin/projectApplication/Denied" component={DeniedApplication} />
          <div style = {{paddingTop:'20px'}}>
           <MuiThemeProvider>
@@ -121,7 +124,8 @@ class AdminPage extends Component {
               <Tab label = "Student Application" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showStudent}/>
               <Tab label = "Rosters" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showRoster}/>
               <Tab label = "Manage Admin" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showAdminTool}/>
-              <Tab label = "Manage GateKeeper" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showCourses}/>         
+              <Tab label = "Manage GateKeeper" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showCourses}/>
+              <Tab label = "Change Semester" style={{backgroundColor:NavColor, color:TextColor}} onActive={this.showSemester}/>
             </Tabs>
           </MuiThemeProvider>
         </div>

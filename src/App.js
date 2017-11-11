@@ -23,7 +23,7 @@ import Projects from './component/projects/Projects';
 import Resource from './component/resource/Resource';
 import Student from './component/student/Student';
 // import TestPlot from './component/peerReview/analytics/TestPlot';
-import { AdminRoute, PublicRoute,PrivateRoute, UnEnrolledRoute, AdvisorRoute, StudentRoute } from './component/Route';
+import { AdminRoute, PublicRoute,PrivateRoute, AdvisorRoute, StudentRoute } from './component/Route';
 import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Primary from './Theme';

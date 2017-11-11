@@ -14,8 +14,8 @@ import ResourceMenu from './resource/ResourceMenu';
 
 import Full_logo from '../assets/full_logo.png';
 import Seal from '../assets/seal.png';
+import VIP_logo from '../assets/viplogo.png';
 import Small_logo from '../assets/small_logo.png';
-import VIP_logo_large from '../assets/VIP_logo_large.png';
 import '../style/Header.css';
 
 @observer
@@ -28,6 +28,7 @@ class Header extends Component {
           <a href = "https://www.udel.edu/">
             <img src = {Full_logo}  className = "image" id = "large"/>
             <img src = {Seal}  id = "seal" />
+            <img src = {VIP_logo} id = "viplogo"/>
           </a>
         </div>
         <nav className="navbar navbar-default navbar-static-top">
@@ -42,7 +43,7 @@ class Header extends Component {
           <div className="collapse navbar-collapse navHeaderCollapse" >
               <MuiThemeProvider>
                 <div>
-                  <div data-toggle="collapse" data-target=".navHeaderCollapse" className="visible-xs row" > 
+                  <div data-toggle="collapse" data-target=".navHeaderCollapse" className="visible-xs row" >
                     <Link to="/"><FlatButton label="Home" className="menuBarButton" fullWidth={true}/></Link>
                     <Link to="/announcement"><FlatButton label="Announcements" className="menuBarButton" fullWidth={true}/></Link>
                     <Link to="/projects"><FlatButton label="Projects" className="menuBarButton" fullWidth={true}/></Link>
@@ -58,7 +59,7 @@ class Header extends Component {
                     <LoginAvatar user={this.props.user}/>
                     <Login user={this.props.user} Width = {true}/>
                   </div>
-                  <div className="hidden-xs"> 
+                  <div className="hidden-xs">
                     <Link to="/"><FlatButton label="Home" className="menuBarButton" /></Link>
                     <Link to="/announcement"><FlatButton label="Announcements" className="menuBarButton"/></Link>
                     <Link to="/projects"><FlatButton label="Projects" className="menuBarButton"/></Link>
@@ -72,10 +73,10 @@ class Header extends Component {
                     <Login user={this.props.user} />
                     <LoginAvatar user={this.props.user}/>
                     {userStore.authed &&
-                    <Link to="/dashboard"><FlatButton label="Dashboard" className="menuBarButton" id = "dashboard" /></Link>                                       
+                    <Link to="/dashboard"><FlatButton label="Dashboard" className="menuBarButton" id = "dashboard" /></Link>
                     }
                   </div>
-                </div>  
+                </div>
               </MuiThemeProvider>
           </div>
 

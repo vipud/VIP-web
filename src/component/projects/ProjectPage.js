@@ -61,6 +61,21 @@ class ProjectPage extends Component {
   }
 
   render() {
+
+    const style = {
+      title: {
+        textAlign : 'center',
+        fontSize: '2em',
+        minHeight: "50px",
+        paddingTop: "10px",
+        overflow: "hidden",
+        textOverflow:"ellipsis",
+        color: Secondary,
+        boxShadow: "0 1px 1px hsla(0,0%,100%,.05) inset",
+        background: "hsla(0,0%,0%,.6)",
+        textShadow: "0 0.03em 0.05em black"
+      }
+    };
     let faculty;
     let data = Object.keys(this.state.data).reverse().map((key) => {
       if(this.state.data[key]==='' || key === 'logo' || key === 'teamName' || key === 'subtitle' || key.substring(0, 4)==="lead"){
@@ -92,16 +107,19 @@ class ProjectPage extends Component {
       <div className = "row">
         <MuiThemeProvider>
           <div>
+            {(this.state.data) ?
+            <h3 style={style.title}>Click "Apply" below to join this team</h3>
+            : ""}
             <Paper zDepth={2} style = {{margin:'20px'}}>
               {this.state.data &&
               <div style = {{padding:'20px'}}>
-                <h1 className = "title" style = {{color:Secondary}}><strong>{this.state.data.title || this.state.data.teamName}</strong></h1>
-                <h2 className = "title" style = {{color:Secondary}}><strong>{this.state.data.subtitle}</strong></h2>
+                <h1 className = "title" style = {{color:Primary}}><strong>{this.state.data.title || this.state.data.teamName}</strong></h1>
+                <h2 className = "title" style = {{color:Primary}}><strong>{this.state.data.subtitle}</strong></h2>
                 <img src = {this.state.data.logo || VIP} style = {{maxWidth:'500px', float:'right'}}/>
                 {data}
                 <h2 style = {{color:Primary, marginBottom:'50px', marginTop:'50px'}}><strong>Faculty</strong></h2>
                 {faculty}
-                {(userStore.authed === true) &&
+                {(userStore.authed === true || true) &&
                   <div className="row">
                   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                     <div>

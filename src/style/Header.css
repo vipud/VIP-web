@@ -33,7 +33,7 @@
 }
 
 #viplogo {
-  position: fixed;
+  position: absolute;
   right: 1em;
   top: .5em;
   max-width: 20%;

@@ -302,7 +302,7 @@ class QuestionPeers extends Component {
         }
         <MuiThemeProvider>
         <Dialog
-          title="Submited"
+          title="Submitted"
           open={this.state.open}
           modal={false}
           onRequestClose={this.handleClose}

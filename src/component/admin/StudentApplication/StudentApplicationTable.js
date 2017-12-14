@@ -1,5 +1,6 @@
 import ReactDataGrid from 'react-data-grid';
 import React, {Component} from 'react';
+import Checkbox from 'material-ui/Checkbox';
 import MuiButton from '../../MuiButton';
 import firebase from '../../../firebase';
 import FlatButton from 'material-ui/FlatButton';
@@ -14,11 +15,12 @@ class StudentApplicationTable extends Component {
     this.state = {
       roster:this.props.roster,
       columns:[],
-    rows:'',
-    sortColumn: null,
-    sortDirection: null,
-    filters:{},
-    selectedIndexes :[] 
+      rows:'',
+      sortColumn: null,
+      sortDirection: null,
+      filters:{},
+      selectedIndexes :[],
+      techElective:false
     }
     this.getRows = this.getRows.bind(this);
     this.rowGetter = this.rowGetter.bind(this);
@@ -35,6 +37,7 @@ class StudentApplicationTable extends Component {
     this.handleRemoveFb = this.handleRemoveFb.bind(this);
     this.handleDeny = this.handleDeny.bind(this);
     this.handleGridRowsUpdated = this.handleGridRowsUpdated.bind(this);
+    this.changeTechElective = this.changeTechElective.bind(this);
   }
 
   componentDidMount() {
@@ -119,10 +122,15 @@ class StudentApplicationTable extends Component {
   }
   
   handleAccept() {
-    console.log('ran');
     let keys = Object.keys(this.state.roster);
     this.state.selectedIndexes.forEach((i) => {
-      console.log(this.state.rows[i]);
+      if(this.state.rows[i]["course"].substring(0, 4)==="CISC"){
+        if(this.state.techElective){
+          this.state.rows[i]["techElective"] = "true";
+        }else{
+          this.state.rows[i]["techElective"] = "false";
+        }
+      }
       firebase.database().ref(`Student_Add_Pending/${this.state.rows[i].teamName}/${this.state.rows[i].semester}`).push(this.state.rows[i]);
       this.handleRemoveFb(keys[i]);
     });
@@ -188,6 +196,13 @@ class StudentApplicationTable extends Component {
     this.setState({ rows });
   };
 
+  changeTechElective(){
+    this.setState((prevState)=>{
+      return{techElective:!prevState.techElective};
+    });
+    
+  }
+
   render() {
     return  (
       <div>
@@ -217,6 +232,7 @@ class StudentApplicationTable extends Component {
           <div>
             <FlatButton label = "Accept" onClick = {this.handleAccept} />
             <FlatButton label = "Deny" onClick = {this.handleDeny} />
+            <Checkbox label="Tech Elective" onCheck = {this.changeTechElective}/>
           </div>
         </MuiThemeProvider>
       </div>);

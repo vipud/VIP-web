@@ -6,7 +6,7 @@ const config = {
     projectId: "project-4046498648357884668",
     storageBucket: "project-4046498648357884668.appspot.com",
     messagingSenderId: "754533512506"
-};
+  };
 firebase.initializeApp(config);
 
 

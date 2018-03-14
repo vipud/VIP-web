@@ -9,6 +9,13 @@ import update from 'react-addons-update';
 import {Link} from 'react-router-dom';
 const { Toolbar, Data: { Selectors } } = require('react-data-grid-addons');
 
+const style = {
+  Checkbox : {
+    width:'200px',
+    textAlign:'center'
+  }
+}
+
 class StudentApplicationTable extends Component {
   constructor(props) {
     super(props);
@@ -232,7 +239,7 @@ class StudentApplicationTable extends Component {
           <div>
             <FlatButton label = "Accept" onClick = {this.handleAccept} />
             <FlatButton label = "Deny" onClick = {this.handleDeny} />
-            <Checkbox label="Tech Elective" onCheck = {this.changeTechElective}/>
+            <Checkbox label="Tech Elective" onCheck = {this.changeTechElective} style = {style.Checkbox} labelPosition = 'left'/>
           </div>
         </MuiThemeProvider>
       </div>);

@@ -86,6 +86,7 @@ class StudentApplication extends Component{
           data['course'] = '';
           data['credits'] = 1;
           data['returning'] = "false";
+          data['level'] = "Freshman";
           this.setState({
             questionsArray: snap.val(),
             data:data,
@@ -125,7 +126,8 @@ class StudentApplication extends Component{
 
     handleMenuChange(event, index, value) {
       let obj  = this.state.data;
-      obj['course'] = this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[value]].course;
+      console.log(value);
+      obj['course'] = value !== 'default' ?this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[value]].course : 'any';
       this.setState({
         value:value,
         data:obj,
@@ -166,7 +168,7 @@ class StudentApplication extends Component{
   firebasewrite = () => {
 
     let empty = checkEmpty(this.state.error, this.state.data, this.state.data.email, this.state.notIncluded);
-    console.log(empty[0]);
+    console.log(this.state.data);
     if(empty[0]) {
       if(`${db}`==='General Information'){
           const rootRef = firebase.database().ref().child('GeneralInformation');

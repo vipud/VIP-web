@@ -48,7 +48,7 @@ class Header extends Component {
                     <Link to="/announcement"><FlatButton label="Announcements" className="menuBarButton" fullWidth={true}/></Link>
                     <Link to="/projects"><FlatButton label="Projects" className="menuBarButton" fullWidth={true}/></Link>
                       <a className="dropdown">
-                        <FlatButton data-toggle="dropdown" label="Faculty Resource" labelPosition="before" icon={<span className="caret"></span>} className="menuBarButton dropdown-toggle" fullWidth={true}/>
+                        <FlatButton data-toggle="dropdown" label="Resources" labelPosition="before" icon={<span className="caret"></span>} className="menuBarButton dropdown-toggle" fullWidth={true}/>
                         <div className="dropdown-menu">
                           <ResourceMenu />
                         </div>
@@ -65,7 +65,7 @@ class Header extends Component {
                     <Link to="/projects"><FlatButton label="Projects" className="menuBarButton"/></Link>
                     <Link to="/peer-review"><FlatButton label="Peer Review" className="menuBarButton"/></Link>
                     <a className="dropdown">
-                      <FlatButton data-toggle="dropdown" label="Faculty Resource" labelPosition="before" icon={<span className="caret"></span>} className="menuBarButton dropdown-toggle"/>
+                      <FlatButton data-toggle="dropdown" label="Resources" labelPosition="before" icon={<span className="caret"></span>} className="menuBarButton dropdown-toggle"/>
                       <div className="dropdown-menu">
                         <ResourceMenu />
                       </div>

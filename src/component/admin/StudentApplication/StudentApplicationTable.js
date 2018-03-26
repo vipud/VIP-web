@@ -13,7 +13,9 @@ const style = {
   Checkbox : {
     width:'200px',
     textAlign:'center'
-  }
+  },
+  numberOfRecords:{
+    float:'right', color:"#d6dedb"}
 }
 
 class StudentApplicationTable extends Component {
@@ -138,10 +140,11 @@ class StudentApplicationTable extends Component {
           this.state.rows[i]["techElective"] = "false";
         }
       }
-      firebase.database().ref(`Student_Add_Pending/${this.state.rows[i].teamName}/${this.state.rows[i].semester}`).push(this.state.rows[i]);
-      this.handleRemoveFb(keys[i]);
+      console.log(this.state.rows[i]);
+      //firebase.database().ref(`Student_Add_Pending/${this.state.rows[i].teamName}/${this.state.rows[i].semester}`).push(this.state.rows[i]);
+      //this.handleRemoveFb(keys[i]);
     });
-    this.handleRemoveRow();
+    //this.handleRemoveRow();
   }
 
   handleDeny() {
@@ -216,15 +219,10 @@ class StudentApplicationTable extends Component {
         <h1 style={{textAlign:'center'}}>Student Applicants</h1>
         <ReactDataGrid
           rowKey="id"
-          onGridSort={this.handleGridSort}
-          enableCellSelect={true}
           columns={this.state.columns}
           rowGetter={this.rowGetter}
           rowsCount={this.getSize()}
           minHeight={400}
-          toolbar={<Toolbar enableFilter={true}/>}
-          onAddFilter={this.handleFilterChange}
-          onClearFilters={this.onClearFilters} 
           onGridRowsUpdated={this.handleGridRowsUpdated}
           rowSelection={{
             showCheckbox: true,
@@ -234,7 +232,7 @@ class StudentApplicationTable extends Component {
               indexes: this.state.selectedIndexes,
             }
           }}/>
-        <p style={{float:'right',color:"#d6dedb"}}>(Number of Records {this.getSize()})</p>
+        <p style={style.numberOfRecords}>(Number of Records {this.getSize()})</p>
         <MuiThemeProvider>
           <div>
             <FlatButton label = "Accept" onClick = {this.handleAccept} />

@@ -6,6 +6,7 @@ import ProjectApplication from './ProjectApplication';
 import ProjectPage from './ProjectPage';
 import ProjectList from './ProjectList';
 import StudentApplication from './StudentApplication';
+import ApplicationWithoutTeam from '../projects/ApplicationWithoutTeam';
 
 import userStore from '../../stores/UserStore';
 
@@ -17,6 +18,7 @@ const Projects = ( {match} ) => (
       <Route exact path={`${match.url}/application`} authed={userStore.authed} component={ ProjectApplication }/>
       <Route path={`${match.url}/:projectId`} component={ ProjectPage }/>
       <Route exact path={match.url} component={ ProjectList }/>
+      <Route exact path={`${match.url}/applying`} component = {ApplicationWithoutTeam } /> 
     </Switch>
   </div>
 )

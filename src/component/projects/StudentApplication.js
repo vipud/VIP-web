@@ -212,6 +212,14 @@ class StudentApplication extends Component{
 
 	render(){
     let questionsArray = this.state.questionsArray;
+
+    const actions = [
+      <Link to = '/'><FlatButton
+        label="Close"
+        primary={true}
+      /></Link>,
+    ];
+
 		return (
 		<div>
 		  <MuiThemeProvider>
@@ -276,9 +284,9 @@ class StudentApplication extends Component{
               </MuiThemeProvider>
               <Dialog
                 title="Applied"
-                modal={false}
+                modal={true}
                 open={this.state.open}
-                onRequestClose={()=>{this.setState({open:false})}}
+                actions = {actions}
                 />
             </div>
 		  </MuiThemeProvider>

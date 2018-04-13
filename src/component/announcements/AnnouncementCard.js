@@ -12,7 +12,8 @@ const style = {
   card: {
     paddingBottom: "10px",
     margin: "10px",
-    height: "500px"
+    height: "500px",
+    backgroundColor:'#f7f7f7'
   },
   cardMedia:{
     height: "100px"

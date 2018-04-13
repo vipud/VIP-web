@@ -84,7 +84,7 @@ class AdminPage extends Component {
     return(
       <div>
         <MuiThemeProvider>
-          <Paper zDepth = {2} style = {{padding:'20px'}}>
+          <Paper zDepth = {2} style = {{padding:'20px', backgroundColor:'#f7f7f7'}}>
             {this.state.Project &&
               <PendingApplication />
             }

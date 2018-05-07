@@ -241,6 +241,7 @@ exports.dailyAnnouncementCron = functions.https.onRequest((req, res) => {
 
 exports.studentAddPending = functions.database.ref('/Student_Add_Pending/{teamname}/{semester}/{uuid}')
   .onWrite(event => {
+    console.log("student Add Pending");
     if(!event.data.val()) {
       throw "no student is added under student add pending";
     }

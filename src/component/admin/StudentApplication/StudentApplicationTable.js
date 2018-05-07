@@ -141,10 +141,10 @@ class StudentApplicationTable extends Component {
         }
       }
       console.log(this.state.rows[i]);
-      //firebase.database().ref(`Student_Add_Pending/${this.state.rows[i].teamName}/${this.state.rows[i].semester}`).push(this.state.rows[i]);
-      //this.handleRemoveFb(keys[i]);
+      firebase.database().ref(`Student_Add_Pending/${this.state.rows[i].teamName}/${this.state.rows[i].semester}`).push(this.state.rows[i]);
+      this.handleRemoveFb(keys[i]);
     });
-    //this.handleRemoveRow();
+    this.handleRemoveRow();
   }
 
   handleDeny() {

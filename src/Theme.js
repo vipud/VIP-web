@@ -6,8 +6,9 @@ const validDomain = "udel.edu";
 const Primary = '#0048a5';
 const Secondary = "#ffd200";
 const DeleteColor = "#d9534f";
+const EditColor = "#afaeaf";
 const NavColor = "#f8f8f8";
 const TextColor = "#202020";
 
-export {DeleteColor, Secondary, NavColor, TextColor, university, validDomain};
+export {DeleteColor, Secondary, NavColor, TextColor, university, validDomain, EditColor};
 export default Primary;

@@ -16,6 +16,7 @@ const Projects = ( {match} ) => (
       {/*<AdvisorRoute exact path={`${match.url}/application`} user={userStore} component={ ASUTeamFormComponent }/>*/}
       <Route exact path={`${match.url}/:projectid/apply`} component={ StudentApplication }/>
       <Route exact path={`${match.url}/application`} authed={userStore.authed} component={ ProjectApplication }/>
+      <Route exact path={`${match.url}/:projectId/edit`} component={ ProjectEditPage } />
       <Route path={`${match.url}/:projectId`} component={ ProjectPage }/>
       <Route exact path={match.url} component={ ProjectList }/>
       <Route exact path={`${match.url}/applying`} component = {ApplicationWithoutTeam } /> 

@@ -9,7 +9,7 @@ import FlatButton from 'material-ui/FlatButton';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiButton from '../MuiButton';
-import Primary, { Secondary, DeleteColor} from '../../Theme';
+import Primary, { Secondary, DeleteColor, EditColor} from '../../Theme';
 //Style sheet
 import '../../style/projectpage.css';
 import {Link} from 'react-router-dom';
@@ -131,7 +131,13 @@ class ProjectPage extends Component {
                   </div>
                 }
                 {(userStore.role === "admin")
-                    ?<MuiButton label = "Sunset Team" color = {DeleteColor} style = {{margin:"10px"}} onClick = {this.handleSunset}/>
+                    ?                  
+                  <div>
+                    <MuiButton label = "Sunset Team" color = {DeleteColor} style = {{margin:"10px"}} onClick = {this.handleSunset}/>
+                    <Link to={`${this.state.fbkey}/edit`}>
+                      <MuiButton label = "Edit Team" color = {EditColor} style = {{margin:"10px"}}/>
+                    </Link>
+                  </div>
                     :<h1 />
                   }
                   <Dialog

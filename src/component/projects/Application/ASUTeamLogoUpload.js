@@ -46,7 +46,7 @@ class ASUTeamLogoUpload extends Component{
                 that.setState({
                   downloadUrl: url,
                 });
-                that.props.childdata(url);
+                that.props.imageUploadUrl(url);
             });
           }
         );

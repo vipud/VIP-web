@@ -71,12 +71,13 @@ class ProjectCard extends Component {
       super(props);
     };
     render () {
+      let slug = this.props.project.teamName.split(" ").join("-");
       return (
         <MuiThemeProvider muiTheme={adjustTheme}   >
           <div className="col-md-12" style={style.wholecard}>
           <Card style={style.card}>
             <div style={style.textpart}>
-            <Link to={`projects/${this.props.fbkey}`}>
+            <Link to={`projects/${slug}`} >
               <CardHeader
                 title={this.props.project.teamName}
                 actAsExpander={false}
@@ -89,7 +90,7 @@ class ProjectCard extends Component {
               <span style={style.subtitle}>{this.props.project.subtitle}</span>
               </CardText>
               <CardActions>
-                <Link to={`projects/${this.props.fbkey}`}><FlatButton label="Learn more / Apply" /></Link>
+                <Link to={`projects/${slug}`} ><FlatButton label="Learn more / Apply" /></Link>
               </CardActions>
               </div>
               <div style={style.imagepart}>

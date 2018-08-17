@@ -9,14 +9,15 @@ import FlatButton from 'material-ui/FlatButton';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiButton from '../MuiButton';
-import Primary, { Secondary, DeleteColor} from '../../Theme';
-//Style sheet
+import Primary, { Secondary, DeleteColor, EditColor} from '../../Theme';//Style sheet
 import '../../style/projectpage.css';
 import {Link} from 'react-router-dom';
 //Firebase init
 import firebase from "../../firebase";
 
 import VIP from '../../assets/viplogo.png';
+import { grey100 } from 'material-ui/styles/colors';
+import { blueGrey100 } from '../../../node_modules/material-ui/styles/colors';
 
 class ProjectPage extends Component {
   constructor(props) {
@@ -31,14 +32,34 @@ class ProjectPage extends Component {
       contactEmail:'',
       open:false,
       faculty:'',
-      fbkey: this.props.match.params.projectId
+      slug: this.props.match.params.projectId,
+      fbkey: ''
     };
     this.handleSunset = this.handleSunset.bind(this);
   }
 
   componentDidMount() {
-
-    firebase.database().ref(`Teams/${this.state.fbkey}`).once('value').then( (snap) => {
+    //Takes slug and finds what project it's mapped to.
+    //Takes faculty info and turns it into a string to display in "faculty" section
+    //console.log(this.state.fbkey);
+    let fbSlugRef = firebase.database().ref("Slugs"); //Slugs section in FB
+    let fbkey = '';
+    //let that = this;
+    //let fbTeamRef = firebase.database().ref("Teams"); //Teams section in FB
+    fbSlugRef.on('value', (snap) => {
+      Object.keys(snap.val()).forEach((key) => { //checks each slug
+        let slugArray = snap.val()[key];
+        //console.log(slugArray);
+        if (slugArray.indexOf(this.state.slug) > -1) { 
+          //console.log("found it");
+          //console.log(this.state.slug);
+          fbkey = key;
+          
+          //console.log(this.state.fbkey);
+        }
+      });
+      //console.log("setting team to " + fbkey);
+      firebase.database().ref(`Teams/${fbkey}`).once('value').then( (snap) => {
       let faculty = {};
       Object.keys(snap.val()).forEach((key)=>{
         if(key.substring(0,4)==="lead"){
@@ -46,10 +67,13 @@ class ProjectPage extends Component {
         }
       });
       this.setState({
-        data:snap.val(),
-        faculty:faculty
+        data: snap.val(),
+        faculty: faculty,
+        fbkey: fbkey 
       });
     });
+    })
+
   }
 
   handleSunset() {
@@ -61,7 +85,6 @@ class ProjectPage extends Component {
   }
 
   render() {
-
     const style = {
       title: {
         textAlign : 'center',
@@ -104,6 +127,7 @@ class ProjectPage extends Component {
       /></Link>,
     ];
     return (
+      
       <div className = "row">
         <MuiThemeProvider>
           <div>
@@ -119,7 +143,7 @@ class ProjectPage extends Component {
                 {data}
                 <h2 style = {{color:Primary, marginBottom:'50px', marginTop:'50px'}}><strong>Faculty</strong></h2>
                 {faculty}
-                {(userStore.authed === true || true) &&
+                {((userStore.authed === true || true) && ((userStore.role !== "admin")&&(userStore.role !== "advisor"))) ?
                   <div className="row">
                   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                     <div>
@@ -129,11 +153,16 @@ class ProjectPage extends Component {
                     </div>
                   </MuiThemeProvider>
                   </div>
+                  : <h1 />
                 }
-                {(userStore.role === "admin")
-                    ?<MuiButton label = "Sunset Team" color = {DeleteColor} style = {{margin:"10px"}} onClick = {this.handleSunset}/>
-                    :<h1 />
-                  }
+                {(userStore.role === 'admin') ?
+                  <div className="row">
+                    <Link to={`${this.state.fbkey}/edit`}>
+                      <MuiButton label = "Edit Team" color = {EditColor} style = {{margin:"10px"}}/>
+                    </Link>
+                      <MuiButton label = "Sunset Team" color = {DeleteColor} style = {{margin:"10px"}} onClick = {this.handleSunset}/>
+                  </div> 
+                  : <h1 /> }
                   <Dialog
                     title='This Team Has Been Successfully Sunset!'
                     actions={actions}

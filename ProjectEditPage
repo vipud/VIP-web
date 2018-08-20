@@ -111,6 +111,7 @@ class ProjectEditPage extends Component{
       this.setState({
         edited: false
       });
+     this.props.history.goBack();
     }
 
   firebasewrite = () => {

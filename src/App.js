@@ -20,6 +20,7 @@ import Home from './component/home/Home';
 import LoginPage from './component/login/LoginPage';
 import PeerReview from './component/peerReview/PeerReview';
 import Projects from './component/projects/Projects';
+import ProjectEditPage from './component/projects/ProjectEditPage';
 import Resource from './component/resource/Resource';
 import Student from './component/student/Student';
 import ApplicationWithoutTeam from './component/projects/ApplicationWithoutTeam';
@@ -102,6 +103,7 @@ class App extends Component {
                 <Route path="/announcement" component={Announcement}/>
                 <Route path="/projects" component={Projects}/>
                 <Route path="/project/apply" component = {ApplicationWithoutTeam} />
+                <Route path="/project/edit" component = {ProjectEditPage} />
                 <Route path="/peer-review" component={PeerReview}/>
                 {/* <Route path="/Test-Plot" component={TestPlot}/> */}
                 <Route path="/resource/:category" component={Resource}/>

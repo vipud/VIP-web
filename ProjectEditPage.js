@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Prompt } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
 import firebase from 'firebase';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
@@ -18,10 +20,10 @@ import {Link} from 'react-router-dom';
 import Primary from '../../Theme';
 
 //TO DO:
-//Group different types of data together under headers? Faculty[array], topics{object}, members[array], media[array] (images)? 
-//After grouping, edit only pieces of data as to lessen potential data loss
 
-//After gaining access to ASU code, go through and make sure code fits within existing structure!!
+//Ensure that, if the team name is changed, it's updated in the advisors section
+
+//Maybe switch from having a single "data" section in state, splitting it up into its regular headers (except for logo)
 
 const style = {
   margin: "10px"
@@ -38,7 +40,10 @@ class ProjectEditPage extends Component{
     this.state = {
         fbkey: this.props.match.params.projectId,
 
-        data: ''
+        teamName: '',
+        currData: {},
+        edited: false,
+        slugArray: []
         /*teamName: '', 
         subtitle: '',
         researchIssues: '',
@@ -51,84 +56,101 @@ class ProjectEditPage extends Component{
           faculty members, etc. That way admins can change roster on the project page itself?
         */
       };
+      this.popElement = null;
+
+      this.setPopElementRef = element =>{
+          this.popElement = element
+      };
     }
+    
     componentDidMount() {
       //Takes info from database and shoves it into this.data
         firebase.database().ref(`Teams/${this.state.fbkey}`).once('value').then( (snap) => {
-          /*let faculty = {};
+          /*let faculty = {};*/
           Object.keys(snap.val()).forEach((key)=>{
-            if(key.substring(0,4)==="lead"){
-              faculty[key] = snap.val()[key].split(",");
+            if(key === "teamName"){
+              this.setState({
+                teamName: snap.val()[key]
+              })
             }
-          });*/
-          this.setState({
-            data:snap.val(),
-            //faculty:faculty
           });
+          this.setState({
+            currData: snap.val()
+          })
+        });
+        firebase.database().ref(`Slugs/${this.state.fbkey}`).once('value').then( (snap) => {
+          this.setState({
+            slugArray: snap.val()
+          })
         });
       }
 
       textChangedHandler = (event, key) => {
         //Allows team info to be changed, updates state
-        const data = {...this.state.data};
+        this.setState({edited: true});
+        const data = {...this.state.currData};
 
         data[key] = event.target.value;
-    
-        this.setState({data: data});
+
+        this.setState({currData: data});
       }
+
+      /*returnToProject = () => {
+        write thing that redirects user to ProjectPage
+      */
 
     imageChangedHandler =(imageUploadUrl) =>{
       if(imageUploadUrl !== null) {
-        const data = {...this.state.data};
+        const data = {...this.state.currData};
 
         data['logo'] = imageUploadUrl;
       
-        this.setState({data: data});
+        this.setState({edited: true, currData: data});
       }
     }
 
-    /*handleChange = (event) => {
-    console.log(this.state.data);
-    var str = event.target.id;
-    var res = str.split("-");
-    var key = res[2].charAt(0).toLowerCase() + res[2].slice(1);
-    var val = event.target.value;
-    var obj  = this.state.data;
-    console.log(key);
-    obj[key] = val;
-    if(key==="topics"){
-     var str = event.target.value;
-     var res=str.split(",");
-     this.setState({
-        topics : res,
+    cancel = () => {
+      this.setState({
+        edited: false
       });
+      this.props.history.goBack();
     }
-    else{
-        console.log(obj);
-        this.setState(obj);
-    }
-    console.log(obj);
-  }*/
-
 
   firebasewrite = () => {
+    const rootRef = firebase.database().ref(`Teams/`+ this.state.fbkey);
     //Takes all the shit in this.data and shoves it back into the database where it came from
-    const rootRef = firebase.database().ref(`Teams/`+this.state.fbkey);
+    
+    if (this.state.teamName !== this.state.currData.teamName) {
+      const slugRef = firebase.database().ref(`Slugs/` + this.state.fbkey);
+      let newSlugArray = [];
+      let newSlug = this.state.currData.teamName.split(" ").join("-");
+      newSlugArray = [newSlug, ...this.state.slugArray];
+      console.log(newSlugArray);
+      slugRef.set({
+      ...newSlugArray
+      })
+    }
+    
     rootRef.set({
-        teamName : this.state.data.teamName,
-        subtitle : this.state.data.subtitle,
-        researchIssues : this.state.data.researchIssues,
-        researchAreas : this.state.data.researchAreas,
-        majorsPreparationandInterests: this.state.data.majorsPreparationandInterests,
-        keyElements: this.state.data.keyElements,
-        goals: this.state.data.goals,
-        leadFacultyAcademicTitle: this.state.data.leadFacultyAcademicTitle,
-        leadFacultyAcademicUnit: this.state.data.leadFacultyAcademicUnit,
-        leadFacultyDegree: this.state.data.leadFacultyDegree,
-        leadFacultyName : this.state.data.leadFacultyName,
-        leadFacultyEmail : this.state.data.leadFacultyEmail,
-        logo: this.state.data.logo
+        teamName : this.state.currData.teamName,
+        subtitle : this.state.currData.subtitle,
+        researchIssues : this.state.currData.researchIssues,
+        researchAreas : this.state.currData.researchAreas,
+        majorsPreparationandInterests: this.state.currData.majorsPreparationandInterests,
+        keyElements: this.state.currData.keyElements,
+        goals: this.state.currData.goals,
+        leadFacultyAcademicTitle: this.state.currData.leadFacultyAcademicTitle,
+        leadFacultyAcademicUnit: this.state.currData.leadFacultyAcademicUnit,
+        leadFacultyDegree: this.state.currData.leadFacultyDegree,
+        leadFacultyName : this.state.currData.leadFacultyName,
+        leadFacultyEmail : this.state.currData.leadFacultyEmail,
+        logo: this.state.currData.logo
         //logo: this.state.teamLogo,
+    }).then(() => {
+      this.setState({
+        edited:false
+      });
+      this.props.history.goBack();
     });
 }
 
@@ -138,9 +160,9 @@ class ProjectEditPage extends Component{
 	render(){
     //let questionsArray = this.state.questionsArray;
     //alert(JSON.stringify(questionsArray));
-
+    //console.log("this seriously started rendering before it had the data");
     //let faculty;
-    let data = Object.keys(this.state.data).reverse().map((key) => {
+    let data = Object.keys(this.state.currData).reverse().map((key) => {
       if(key === "logo"){
         return/*(
           <div key={key}>
@@ -154,12 +176,12 @@ class ProjectEditPage extends Component{
           <h3 style = {{color:Primary, marginBottom:'30px', marginTop:'40px'}}><strong>{"Edit " + key.charAt(0).toUpperCase() + key.slice(1).split(/(?=[A-Z]|and)+/).join(" ")}</strong></h3>
         <TextField 
           style={{width: '50%'}}
-          value={this.state.data[key]}
+          value={this.state.currData[key]}
           onChange={(event) => { this.textChangedHandler(event, key)}}
           /><br /></div>
       );
     });
-    console.log(this.state.data);
+    //console.log(this.state.currData);
 
 
 
@@ -168,15 +190,21 @@ class ProjectEditPage extends Component{
                 <MuiThemeProvider>
                     <div>   
             <Card>
-              <CardTitle title="Edit Project Page">
-                {this.state.data && data}
-              </CardTitle>
+              {(this.state.application) ?
+                <CardTitle title="Edit Application Page">
+                  {this.state.currData && data}
+                </CardTitle>
+                :
+                <CardTitle title="Edit Project Page">
+                  {this.state.currData && data}
+                </CardTitle>
+              }
             </Card>
               <br/>
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
                 <div>
-                  <RaisedButton label="Submit Changes"  style={style} backgroundColor={Primary} onClick={this.firebasewrite}
-                  data-toggle="modal" data-target="#myModal" /> <br />
+                    <RaisedButton label="Cancel" style={style} backgroundColor={Primary} onClick={() => this.cancel()} />
+                    <RaisedButton label="Apply Changes"  style={style} backgroundColor={Primary} onClick={this.firebasewrite}/> <br />
                 </div>
               </MuiThemeProvider>
               <ASUTeamLogoUpload imageUploadUrl = {this.imageChangedHandler}/>
@@ -185,10 +213,15 @@ class ProjectEditPage extends Component{
             </MuiThemeProvider>
 
         <TeamApplyModalComponent />
-      </div>)
+        <Prompt
+          when={this.state.edited}
+          message="You have unsaved changes. Are you sure you want to leave?"
+        />
+      </div>
+    )
 	}
 }
 
 
 
-export default ProjectEditPage;
+export default withRouter(ProjectEditPage);

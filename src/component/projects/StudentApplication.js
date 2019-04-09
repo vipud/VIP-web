@@ -41,16 +41,17 @@ class StudentApplication extends Component{
       super(props);
       this.state = {
         data:{},
-        fbkey: this.props.match.params.projectid,
+        fbkey: this.props.match.params.fbkey,
         errorText:'',
         error:{},
         courses:'',
         semester:'',
-        creditOptions:[1,2],
+        creditOptions:[],
         level:["Freshman", "Sophomore", "Junior", "Senior"],
         returning:false,
         value:"default",
-        levelValue:0,
+        levelValue: 0,
+        sections: '',
         notIncluded:['fbkey', 'errorText','error','other', 'course', 'credits']
       };
       this.handleMenuChange = this.handleMenuChange.bind(this);
@@ -98,6 +99,11 @@ class StudentApplication extends Component{
         firebase.database().ref(`Courses`).on('value', (snap) => {
           this.setState({courses:snap.val()});
         });
+
+        firebase.database().ref(`Sections`).on('value', (snap) => {
+          //do something about this?
+          this.setState({sections:snap.val()});
+        });
     }
 
     getdata =(childdata) =>{
@@ -117,6 +123,7 @@ class StudentApplication extends Component{
     }
 
     handleCreditChange(event, index) {
+      //check this
       let obj  = this.state.data;
       obj['credits'] = this.state.creditOptions[index];
       this.setState({
@@ -125,9 +132,10 @@ class StudentApplication extends Component{
     }
 
     handleMenuChange(event, index, value) {
+      //i dunno, fix this
       let obj  = this.state.data;
       console.log(value);
-      obj['course'] = value !== 'default' ?this.state.courses[this.state.title][Object.keys(this.state.courses[this.state.title])[value]].course : 'any';
+      obj['course'] = value !== 'default' ?this.state.courses[value].course : 'any';
       this.setState({
         value:value,
         data:obj,
@@ -156,11 +164,16 @@ class StudentApplication extends Component{
   }
 
   handleLevelChange(event, index){
+    //things should probably be done here
     let level = this.state.level;
     let obj = this.state.data;
     obj["level"] = this.state.level[index];
+    var N = index + 1; 
+    var creditOptions = [];
+    creditOptions.apply(null, {length: N}).map(Number.call, Number) //populate credit array with 1 to n
     this.setState({
-      levelValue:index,
+      levelValue: index + 1,
+      creditOptions: creditOptions,
       data:obj
     });
   }
@@ -248,11 +261,16 @@ class StudentApplication extends Component{
                   </div>)}))
                     : (<h2>Loading..</h2>) }
                 <br/>
-                {this.state.courses[this.state.title]
+                <SelectField floatingLabelText="Level" value={this.state.levelValue} onChange={this.handleLevelChange}>
+                      {this.state.level.map((key, index) => {
+                        return <MenuItem value = {index} primaryText = {key} key = {key}/>
+                      })}
+                </SelectField>
+                {this.state.courses //to do: map courses from firebase
                 ?<div>
                   <SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleMenuChange}>
                     <MenuItem value = {"default"} primaryText = 'please select a course'/>
-                    {Object.keys(this.state.courses[this.state.title]).map((key, index) => {
+                    {Object.keys(this.state.courses).map((key, index) => {
                       return <MenuItem value = {index} primaryText = {this.state.courses[this.state.title][key].course} key = {key}/>
                     })}
                   </SelectField>
@@ -268,11 +286,6 @@ class StudentApplication extends Component{
                 </div>
                 :<h1/>
                   }
-                    <SelectField floatingLabelText="Level" value={this.state.levelValue} onChange={this.handleLevelChange}>
-                      {this.state.level.map((key, index) => {
-                        return <MenuItem value = {index} primaryText = {key} key = {key}/>
-                      })}
-                    </SelectField>
                   <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card><br/>

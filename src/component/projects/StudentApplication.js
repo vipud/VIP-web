@@ -41,10 +41,12 @@ class StudentApplication extends Component{
       super(props);
       this.state = {
         data:{},
-        fbkey: this.props.match.params.fbkey,
+        fbkey: this.props.match.params.projectid,
         errorText:'',
         error:{},
         courses:'',
+        courseOptions: '',
+        courseValue: 0,
         semester:'',
         creditOptions:[],
         level:["Freshman", "Sophomore", "Junior", "Senior"],
@@ -52,17 +54,20 @@ class StudentApplication extends Component{
         value:"default",
         levelValue: 0,
         sections: '',
-        notIncluded:['fbkey', 'errorText','error','other', 'course', 'credits']
+        notIncluded:['errorText','error','other', 'course', 'credits']
       };
       this.handleMenuChange = this.handleMenuChange.bind(this);
       this.handleCreditChange = this.handleCreditChange.bind(this);
+      this.handleCourseChange = this.handleCourseChange.bind(this);
       this.handleCheck = this.handleCheck.bind(this);
       this.handleLevelChange = this.handleLevelChange.bind(this);
     }
 
     componentDidMount() {
         let data = {};
+        console.log(this.state.fbkey);
         firebase.database().ref(`Teams/`+this.state.fbkey).once(`value`).then( (snap) => {
+          console.log(snap.val);
           data['teamName'] = snap.val().teamName;
             this.setState({
                 title: snap.val().teamName,
@@ -97,11 +102,22 @@ class StudentApplication extends Component{
         });
 
         firebase.database().ref(`Courses`).on('value', (snap) => {
-          this.setState({courses:snap.val()});
+          //console.log(snap.val()[0].courseNum.replace('x', 1));
+          let optionsLen = snap.val().length;
+          let courseOptions = new Array(optionsLen);
+          for (var i = 0; i < optionsLen; i ++) {
+            //console.log(snap.val()[i].courseNum.replace('x', 1));
+            courseOptions[i] = snap.val()[i].courseNum.replace('x', 1);
+          }
+          this.setState({
+            courses:snap.val(),
+            courseOptions: courseOptions
+          });
         });
 
         firebase.database().ref(`Sections`).on('value', (snap) => {
           //do something about this?
+          console.log(snap.val());
           this.setState({sections:snap.val()});
         });
     }
@@ -116,9 +132,36 @@ class StudentApplication extends Component{
       let checked = this.state.returning;
       let obj = this.state.data;
       obj['returning'] = (!checked).toString();
+      
+      var optionsLen
+      let courseOptions;
+      let coursesLen = this.state.courses.length;
+      if(!checked) {
+        optionsLen = coursesLen * 4; 
+        courseOptions = new Array(optionsLen);
+      }
+      else {
+        optionsLen = coursesLen; 
+        courseOptions = new Array(optionsLen);
+      }
+      console.log(optionsLen);
+      console.log(this.state.courses[0].courseNum);
+      for (let i = 0; i < optionsLen; i ++) {
+        if(!checked) {
+          for (let j = 0; j < 4; j++) {
+            courseOptions[j] = this.state.courses[i].courseNum.replace('x', j);
+            console.log(this.state.courses[i].courseNum.replace('x', (j+1)));
+          }
+        }
+        else {
+          courseOptions[i] = this.state.courses[i].courseNum.replace('x', 1);
+        }
+      }
+      obj['courseOptions'] = courseOptions;
       this.setState({
         data:obj,
-        returning:!checked
+        returning:!checked,
+        courseOptions: courseOptions
       });
     }
 
@@ -134,7 +177,7 @@ class StudentApplication extends Component{
     handleMenuChange(event, index, value) {
       //i dunno, fix this
       let obj  = this.state.data;
-      console.log(value);
+      //console.log(value);
       obj['course'] = value !== 'default' ?this.state.courses[value].course : 'any';
       this.setState({
         value:value,
@@ -165,17 +208,34 @@ class StudentApplication extends Component{
 
   handleLevelChange(event, index){
     //things should probably be done here
-    let level = this.state.level;
     let obj = this.state.data;
     obj["level"] = this.state.level[index];
-    var N = index + 1; 
-    var creditOptions = [];
-    creditOptions.apply(null, {length: N}).map(Number.call, Number) //populate credit array with 1 to n
     this.setState({
-      levelValue: index + 1,
-      creditOptions: creditOptions,
+      levelValue: index,
       data:obj
     });
+  }
+
+  handleCourseChange(event, index){
+    var creditOptions;
+    let obj = this.state.data;
+    obj["course"] = this.state.courses[index];
+    console.log(this.state.courses[index])
+    if(this.state.returning) {
+      var N = index%4 + 1; 
+      creditOptions = new Array(N);
+      for (let i = 0; i < N; i++) {
+        creditOptions[i] = i + 1;
+      }
+    }
+    else {
+      creditOptions = [1]
+    }
+    console.log(creditOptions);
+    this.setState({
+      courseValue: index,
+      data: obj
+    })
   }
 
   firebasewrite = () => {
@@ -249,7 +309,7 @@ class StudentApplication extends Component{
                           value = {this.state.data[questionsArray[id].id]}
                           floatingLabelText={questionsArray[id].text}
                           errorText={this.state.errorText}
-                          onChange={ this.handleChange}/><br /></div>)
+                          onChange={this.handleChange}/><br /></div>)
                     }
                     return(
                   <div key = {id}>
@@ -268,10 +328,10 @@ class StudentApplication extends Component{
                 </SelectField>
                 {this.state.courses //to do: map courses from firebase
                 ?<div>
-                  <SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleMenuChange}>
+                  <SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleCourseChange}>
                     <MenuItem value = {"default"} primaryText = 'please select a course'/>
                     {Object.keys(this.state.courses).map((key, index) => {
-                      return <MenuItem value = {index} primaryText = {this.state.courses[this.state.title][key].course} key = {key}/>
+                      return <MenuItem value = {index} primaryText = {this.state.courseOptions[index] + '-'} key = {key}/>
                     })}
                   </SelectField>
                   {this.state.creditOptions.length > 0 &&

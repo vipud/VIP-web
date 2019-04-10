@@ -55,7 +55,10 @@ class ProjectPage extends Component {
           //console.log(this.state.slug);
           fbkey = key;
           
-          //console.log(this.state.fbkey);
+          //console.log(key);
+          this.setState({
+            fbkey: key
+          })
         }
       });
       //console.log("setting team to " + fbkey);
@@ -68,8 +71,7 @@ class ProjectPage extends Component {
       });
       this.setState({
         data: snap.val(),
-        faculty: faculty,
-        fbkey: fbkey 
+        faculty: faculty
       });
     });
     })

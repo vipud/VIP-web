@@ -20,6 +20,7 @@ import Primary, {university} from '../../Theme';
 import TeamApplyModalComponent from './Application/TeamApplyModalComponent';
 import TextFieldComponent from './Application/TextFieldComponent';
 import {Link} from 'react-router-dom';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 const TeamFormPath = 'StudentApplication_Raw_Data';
 var db = 'Student Application';
@@ -46,14 +47,16 @@ class StudentApplication extends Component{
         error:{},
         courses:'',
         courseOptions: '',
+        creditOptions: [],
+        courseOptLen: '',
         courseValue: 0,
+        course: '',
         semester:'',
-        creditOptions:[],
         level:["Freshman", "Sophomore", "Junior", "Senior"],
         returning:false,
         value:"default",
         levelValue: 0,
-        sections: '',
+        section: '',
         notIncluded:['errorText','error','other', 'course', 'credits']
       };
       this.handleMenuChange = this.handleMenuChange.bind(this);
@@ -67,8 +70,9 @@ class StudentApplication extends Component{
         let data = {};
         console.log(this.state.fbkey);
         firebase.database().ref(`Teams/`+this.state.fbkey).once(`value`).then( (snap) => {
-          console.log(snap.val);
+          //console.log(snap.val);
           data['teamName'] = snap.val().teamName;
+          //console.log(snap.val().teamName);
             this.setState({
                 title: snap.val().teamName,
             });
@@ -101,24 +105,17 @@ class StudentApplication extends Component{
           });
         });
 
-        firebase.database().ref(`Courses`).on('value', (snap) => {
-          //console.log(snap.val()[0].courseNum.replace('x', 1));
-          let optionsLen = snap.val().length;
-          let courseOptions = new Array(optionsLen);
-          for (var i = 0; i < optionsLen; i ++) {
-            //console.log(snap.val()[i].courseNum.replace('x', 1));
-            courseOptions[i] = snap.val()[i].courseNum.replace('x', 1);
-          }
-          this.setState({
-            courses:snap.val(),
-            courseOptions: courseOptions
-          });
+        firebase.database().ref(`Sections/`+this.state.fbkey).once('value').then( (snap) => {
+          //do something about this?
+          //console.log(snap.val().section);
+          this.setState({section:snap.val().section});
         });
 
-        firebase.database().ref(`Sections`).on('value', (snap) => {
-          //do something about this?
-          console.log(snap.val());
-          this.setState({sections:snap.val()});
+        firebase.database().ref(`Courses`).on('value', (snap) => {
+          this.setState({
+            courses:snap.val()
+          });
+          this.updateCourseOptions(this.state.returning, this.state.levelValue);
         });
     }
 
@@ -132,35 +129,61 @@ class StudentApplication extends Component{
       let checked = this.state.returning;
       let obj = this.state.data;
       obj['returning'] = (!checked).toString();
-      
-      var optionsLen
-      let courseOptions;
-      let coursesLen = this.state.courses.length;
-      if(!checked) {
-        optionsLen = coursesLen * 4; 
-        courseOptions = new Array(optionsLen);
-      }
-      else {
-        optionsLen = coursesLen; 
-        courseOptions = new Array(optionsLen);
-      }
-      console.log(optionsLen);
-      console.log(this.state.courses[0].courseNum);
-      for (let i = 0; i < optionsLen; i ++) {
-        if(!checked) {
-          for (let j = 0; j < 4; j++) {
-            courseOptions[j] = this.state.courses[i].courseNum.replace('x', j);
-            console.log(this.state.courses[i].courseNum.replace('x', (j+1)));
-          }
-        }
-        else {
-          courseOptions[i] = this.state.courses[i].courseNum.replace('x', 1);
-        }
-      }
-      obj['courseOptions'] = courseOptions;
+      this.updateCourseOptions(!checked, this.state.levelValue);
       this.setState({
         data:obj,
         returning:!checked,
+        //courseOptions: courseOptions
+      });
+    }
+
+    updateCourseOptions(returning, levelIndex) {
+      //logic to figure out how many sections a student has access to
+      this.setState({
+        creditOptions: [],
+        value: '',
+        courseValue: 0,
+        course: ''
+      });
+
+      let courseOptLen;
+      if(!returning) {
+        if(levelIndex === 0) {
+          //console.log(levelIndex);
+          //console.log(this.state.level[levelIndex] + " new: " + 1);
+          courseOptLen = 1;
+        }
+        else {
+          //console.log(levelIndex);
+          //console.log(this.state.level[levelIndex] + " new: " + 2);
+          courseOptLen = 2;
+        }
+      }
+      else {
+        if(levelIndex === 3) {
+          //console.log(levelIndex);
+          //console.log(this.state.level[levelIndex] + " returning: " + 4);
+          courseOptLen = 4;
+        }
+        else {
+          //console.log(levelIndex);
+          //console.log(this.state.level[levelIndex] + " returning: " + (levelIndex + 2));
+          courseOptLen = levelIndex + 2;
+        }
+      }
+
+      //logic to implement new course options based on sections a student has access to
+      let coursesLen = this.state.courses.length;
+      let courseOptions = new Array(courseOptLen * coursesLen);
+
+      for(let i = 0; i < coursesLen; i ++) {
+        for(let j = 0; j < courseOptLen; j++) {
+          courseOptions[(i*courseOptLen) + j] = this.state.courses[i].courseNum.replace('x', (j+1));
+        }
+      }
+
+      this.setState({
+        courseOptLen: courseOptLen,
         courseOptions: courseOptions
       });
     }
@@ -170,6 +193,7 @@ class StudentApplication extends Component{
       let obj  = this.state.data;
       obj['credits'] = this.state.creditOptions[index];
       this.setState({
+        credits: index,
         data:obj
       });
     }
@@ -178,8 +202,9 @@ class StudentApplication extends Component{
       //i dunno, fix this
       let obj  = this.state.data;
       //console.log(value);
-      obj['course'] = value !== 'default' ?this.state.courses[value].course : 'any';
+      obj['course'] = value !== 'default' ?this.state.courseOptions[index].course : 'any';
       this.setState({
+        course: value,
         value:value,
         data:obj,
       });
@@ -210,30 +235,37 @@ class StudentApplication extends Component{
     //things should probably be done here
     let obj = this.state.data;
     obj["level"] = this.state.level[index];
+    console.log(index);
+    this.updateCourseOptions(this.state.returning, index);
     this.setState({
       levelValue: index,
       data:obj
     });
+    
   }
 
-  handleCourseChange(event, index){
-    var creditOptions;
+  handleCourseChange(event, index, value){
     let obj = this.state.data;
-    obj["course"] = this.state.courses[index];
-    console.log(this.state.courses[index])
-    if(this.state.returning) {
-      var N = index%4 + 1; 
-      creditOptions = new Array(N);
-      for (let i = 0; i < N; i++) {
-        creditOptions[i] = i + 1;
-      }
+    obj["course"] = this.state.courseOptions[index];
+    console.log(this.state.courseOptions[index])
+    let creditOptLen = index % this.state.courseOptLen + 1;
+    let creditOptions = new Array(creditOptLen);
+    for (let i = 0; i < creditOptLen; i++) {
+      creditOptions[i] = i + 1;
     }
-    else {
-      creditOptions = [1]
-    }
+
+    //obj['course'] = value !== 'default' ?this.state.courseOptions[value].course : 'any';
+    /*this.setState({
+      course:value,
+      data:obj,
+    });*/
     console.log(creditOptions);
+    //obj["creditOptions"] = creditOptions;
     this.setState({
       courseValue: index,
+      creditOptions: creditOptions,
+      value: value,
+      course: this.state.courseOptions[index],
       data: obj
     })
   }
@@ -326,12 +358,12 @@ class StudentApplication extends Component{
                         return <MenuItem value = {index} primaryText = {key} key = {key}/>
                       })}
                 </SelectField>
+                <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 {this.state.courses //to do: map courses from firebase
                 ?<div>
                   <SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleCourseChange}>
-                    <MenuItem value = {"default"} primaryText = 'please select a course'/>
-                    {Object.keys(this.state.courses).map((key, index) => {
-                      return <MenuItem value = {index} primaryText = {this.state.courseOptions[index] + '-'} key = {key}/>
+                    {Object.keys(this.state.courseOptions).map((key, index) => {
+                      return <MenuItem value = {index} primaryText = {this.state.courseOptions[index] + '-' + this.state.section} key = {key}/>
                     })}
                   </SelectField>
                   {this.state.creditOptions.length > 0 &&
@@ -346,7 +378,6 @@ class StudentApplication extends Component{
                 </div>
                 :<h1/>
                   }
-                  <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card><br/>
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>

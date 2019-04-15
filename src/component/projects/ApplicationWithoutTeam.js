@@ -62,10 +62,17 @@ class ApplicationWithoutTeam extends Component{
       error:{},
       errorEmail:'',
       formQuestions:'',
-      levels:["Freshman", "Sophomore", "Junior", "Senior", "Graduate"],
+      level:["Freshman", "Sophomore", "Junior", "Senior", "Graduate"],
       notIncluded:[],
       returning:false,
       teams:'',  
+      course: '',
+      section: 'none',
+      courseOptions: '',
+      credits: 1,
+      levelValue: 0,
+      teamName: 'undecided',
+      fbkey: ''
     }
     this.handleCheck = this.handleCheck.bind(this);
     this.handleCourseChange = this.handleCourseChange.bind(this);
@@ -100,11 +107,23 @@ class ApplicationWithoutTeam extends Component{
         }
       });
 
-      data['course'] = '';
-      data['credits'] = '';
-      data['level'] = '';
-      data['returning'] = 'false';
-      data['teamName'] = '';
+      firebase.database().ref(`Sections/`).once('value').then( (snap) => {
+        this.setState({sections:snap.val().sections});
+      });
+
+      firebase.database().ref(`Courses`).on('value', (snap) => {
+        this.setState({
+          courses:snap.val()
+        });
+        this.updateCourseOptions(this.state.returning, this.state.levelValue);
+      });
+      
+
+      //data['course'] = '';
+      //data['credits'] = '';
+      //data['level'] = '';
+      //data['returning'] = 'false';
+      //data['teamName'] = '';
       
       this.setState({
         formQuestions:snap.val(),
@@ -114,9 +133,61 @@ class ApplicationWithoutTeam extends Component{
     });
   }
 
+  updateCourseOptions(returning, levelIndex) {
+    //logic to figure out how many sections a student has access to
+    this.setState({
+      creditOptions: [],
+      value: '',
+      courseValue: 0,
+      course: ''
+    });
+
+    let courseOptLen;
+    if(!returning) {
+      if(levelIndex === 0) {
+        //console.log(levelIndex);
+        //console.log(this.state.level[levelIndex] + " new: " + 1);
+        courseOptLen = 1;
+      }
+      else {
+        //console.log(levelIndex);
+        //console.log(this.state.level[levelIndex] + " new: " + 2);
+        courseOptLen = 2;
+      }
+    }
+    else {
+      if(levelIndex === 3) {
+        //console.log(levelIndex);
+        //console.log(this.state.level[levelIndex] + " returning: " + 4);
+        courseOptLen = 4;
+      }
+      else {
+        //console.log(levelIndex);
+        //console.log(this.state.level[levelIndex] + " returning: " + (levelIndex + 2));
+        courseOptLen = levelIndex + 2;
+      }
+    }
+
+    //logic to implement new course options based on sections a student has access to
+    let coursesLen = this.state.courses.length;
+    let courseOptions = new Array(courseOptLen * coursesLen);
+
+    for(let i = 0; i < coursesLen; i ++) {
+      for(let j = 0; j < courseOptLen; j++) {
+        courseOptions[(i*courseOptLen) + j] = this.state.courses[i].courseNum.replace('x', (j+1));
+      }
+    }
+
+    this.setState({
+      courseOptLen: courseOptLen,
+      courseOptions: courseOptions
+    });
+  }
+
   handleLevelChange(event, index, value){
     let data = this.state.data;
-    data['level'] = this.state.levels[value];
+    data['level'] = this.state.level[value];
+    this.updateCourseOptions(this.state.returning, index);
     this.setState({
       data:data,
       levelValue:value
@@ -127,6 +198,7 @@ class ApplicationWithoutTeam extends Component{
     let checked = this.state.returning;
     let data = this.state.data;
     data['returning'] = (!checked).toString();
+    this.updateCourseOptions(!checked, this.state.levelValue);
     this.setState({
       data:data,
       returning:!checked
@@ -145,10 +217,18 @@ class ApplicationWithoutTeam extends Component{
   handleCourseChange(event, index, value){
     let data = this.state.data;
     console.log(value);
-    data['course'] = this.state.courses[this.state.data['teamName']][value].course;
+    data['course'] = this.state.courseOptions[value];
+    let creditOptLen = index % this.state.courseOptLen + 1;
+    let creditOptions = new Array(creditOptLen);
+    for (let i = 0; i < creditOptLen; i++) {
+      creditOptions[i] = i + 1;
+    }
     this.setState({
-      data:data,
-      courseValue:value
+      courseValue: index,
+      creditOptions: creditOptions,
+      value: value,
+      course: this.state.courseOptions[index],
+      data:data
     });
   }
 
@@ -238,19 +318,18 @@ class ApplicationWithoutTeam extends Component{
                       }
                     </SelectField>
                     <SelectField floatingLabelText="Select Your Level" value={this.state.levelValue} onChange={this.handleLevelChange} errorText={this.state.error['level']} style = {style.text}>
-                      {levels.map((level, index)=>(
+                      {this.state.level.map((level, index)=>(
                         <MenuItem value = {index} primaryText={level} key = {index}/>
                       ))
                       }
                     </SelectField>
                   </div>
-                  {this.state.data['teamName'] &&
+                  {this.state.courseOptions &&
                     <div style = {{display:'flex', justifyContent:'center', flexDirection:'column'}}>
                       <SelectField floatingLabelText="Select A Course" value={this.state.courseValue} onChange={this.handleCourseChange} errorText={this.state.error['course']} style = {style.text}>
-                        {Object.keys(courses[this.state.data['teamName']]).map((course, index)=>{
-                          return <MenuItem value = {course} primaryText={courses[this.state.data['teamName']][course].course} key = {index}/>;
-                        })
-                        }
+                        {Object.keys(this.state.courseOptions).map((key, index) => {
+                          return <MenuItem value = {index} primaryText = {this.state.courseOptions[index]} key = {key}/>
+                        })}
                       </SelectField>
                       <h4 style = {{color:'#acb1b4', alignSelf:'center'}}>Select Credits</h4>
                       <RadioButtonGroup valueSelected = {this.state.credit} onChange = {this.handleCreditChange} style = {style.text}>

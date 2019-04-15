@@ -358,8 +358,7 @@ class StudentApplication extends Component{
                         return <MenuItem value = {index} primaryText = {key} key = {key}/>
                       })}
                 </SelectField>
-                <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
-                {this.state.courses //to do: map courses from firebase
+                {this.state.courseOptions //to do: map courses from firebase
                 ?<div>
                   <SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleCourseChange}>
                     {Object.keys(this.state.courseOptions).map((key, index) => {
@@ -378,6 +377,7 @@ class StudentApplication extends Component{
                 </div>
                 :<h1/>
                   }
+                <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card><br/>
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>

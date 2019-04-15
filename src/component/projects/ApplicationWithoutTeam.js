@@ -62,7 +62,7 @@ class ApplicationWithoutTeam extends Component{
       error:{},
       errorEmail:'',
       formQuestions:'',
-      level:["Freshman", "Sophomore", "Junior", "Senior", "Graduate"],
+      level:["Freshman", "Sophomore", "Junior", "Senior"],
       notIncluded:[],
       returning:false,
       teams:'',  

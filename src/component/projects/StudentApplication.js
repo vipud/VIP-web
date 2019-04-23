@@ -353,6 +353,7 @@ class StudentApplication extends Component{
                   </div>)}))
                     : (<h2>Loading..</h2>) }
                 <br/>
+                <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 <SelectField floatingLabelText="Level" value={this.state.levelValue} onChange={this.handleLevelChange}>
                       {this.state.level.map((key, index) => {
                         return <MenuItem value = {index} primaryText = {key} key = {key}/>
@@ -377,7 +378,6 @@ class StudentApplication extends Component{
                 </div>
                 :<h1/>
                   }
-                <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card><br/>
               <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>

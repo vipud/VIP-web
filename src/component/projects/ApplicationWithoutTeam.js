@@ -71,6 +71,7 @@ class ApplicationWithoutTeam extends Component{
       courseOptions: '',
       credits: 1,
       levelValue: 0,
+      teamValue: '',
       teamName: 'undecided',
       fbkey: ''
     }
@@ -90,6 +91,7 @@ class ApplicationWithoutTeam extends Component{
       this.setState({
         teams:_.toArray(snap.val())
       });
+      //console.log(this.state.teams);
     });
     firebase.database().ref('Semester/application').once('value').then((snap)=>{
       data['semester'] = snap.val();
@@ -119,11 +121,11 @@ class ApplicationWithoutTeam extends Component{
       });
       
 
-      //data['course'] = '';
-      //data['credits'] = '';
-      //data['level'] = '';
-      //data['returning'] = 'false';
-      //data['teamName'] = '';
+      data['course'] = '';
+      data['credits'] = '';
+      data['level'] = '';
+      data['returning'] = 'false';
+      data['teamName'] = '';
       
       this.setState({
         formQuestions:snap.val(),
@@ -177,7 +179,7 @@ class ApplicationWithoutTeam extends Component{
         courseOptions[(i*courseOptLen) + j] = this.state.courses[i].courseNum.replace('x', (j+1));
       }
     }
-
+    //console.log("In updateCourseOptions():" + this.state.teamName);
     this.setState({
       courseOptLen: courseOptLen,
       courseOptions: courseOptions
@@ -187,6 +189,7 @@ class ApplicationWithoutTeam extends Component{
   handleLevelChange(event, index, value){
     let data = this.state.data;
     data['level'] = this.state.level[value];
+    //console.log("In handleLevelChange():" + this.state.teamName);
     this.updateCourseOptions(this.state.returning, index);
     this.setState({
       data:data,
@@ -198,6 +201,7 @@ class ApplicationWithoutTeam extends Component{
     let checked = this.state.returning;
     let data = this.state.data;
     data['returning'] = (!checked).toString();
+    //console.log("In handleCheck():" + this.state.teamName);
     this.updateCourseOptions(!checked, this.state.levelValue);
     this.setState({
       data:data,
@@ -208,6 +212,7 @@ class ApplicationWithoutTeam extends Component{
   handleCreditChange(event, index, value){
     let data = this.state.data;
     data['credits'] = event.target.value;
+    //console.log("In handleCreditChange():" + this.state.teamName);
     this.setState({
       data:data,
       credit:parseInt(event.target.value)
@@ -216,7 +221,7 @@ class ApplicationWithoutTeam extends Component{
 
   handleCourseChange(event, index, value){
     let data = this.state.data;
-    console.log(value);
+    //console.log(value);
     data['course'] = this.state.courseOptions[value];
     let creditOptLen = index % this.state.courseOptLen + 1;
     let creditOptions = new Array(creditOptLen);
@@ -233,11 +238,16 @@ class ApplicationWithoutTeam extends Component{
   }
 
   handleMenuChange(event, index, value){
+    //console.log(value);
     let data = this.state.data;
-    data['teamName'] = this.state.teams[value].teamName;
+    //console.log(this.state.teams[value].teamName);
+    let teamName = this.state.teams[value].teamName;
+    data['teamName'] = teamName;
+    //console.log("In handleMenuChange():" + teamName);
     this.setState({
+      teamName: teamName,
       data:data,
-      value:value
+      teamValue:value
     })
   }
 
@@ -260,6 +270,7 @@ class ApplicationWithoutTeam extends Component{
   handleTextChange(event, index, value){
     let data = this.state.data;
     data[event.target.id] = event.target.value;
+    //console.log("In handleTextChange():" + this.state.teamName);
     this.setState({
       data:data
     });
@@ -311,12 +322,13 @@ class ApplicationWithoutTeam extends Component{
                     }
                   })}
                   <div style = {{display:'flex', justifyContent:'center', flexDirection:'column'}}>
-                    <SelectField floatingLabelText="Select a Team" value={this.state.value} onChange={this.handleMenuChange}  errorText={this.state.error['team']} style = {style.text}>
+                    <SelectField floatingLabelText="Select a Team" value={this.state.teamValue} onChange={this.handleMenuChange}  errorText={this.state.error['team']} style = {style.text}>
                       {Object.keys(teams).map((team)=>(
                         <MenuItem value = {team} primaryText={teams[team].teamName} />
                       ))
                       }
                     </SelectField>
+                    <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px', alignSelf:'center', width:'256px'}} onCheck = {this.handleCheck} />
                     <SelectField floatingLabelText="Select Your Level" value={this.state.levelValue} onChange={this.handleLevelChange} errorText={this.state.error['level']} style = {style.text}>
                       {this.state.level.map((level, index)=>(
                         <MenuItem value = {index} primaryText={level} key = {index}/>
@@ -339,7 +351,6 @@ class ApplicationWithoutTeam extends Component{
                       </RadioButtonGroup>
                     </div>
                   }
-                    <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px', alignSelf:'center', width:'256px'}} onCheck = {this.handleCheck} />
                 </div>
               </Card>
               }

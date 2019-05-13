@@ -69,6 +69,7 @@ class ProjectPage extends Component {
           faculty[key] = snap.val()[key].split(",");
         }
       });
+      //console.log(faculty);
       this.setState({
         data: snap.val(),
         faculty: faculty
@@ -116,7 +117,21 @@ class ProjectPage extends Component {
     if(this.state.faculty){
       faculty = this.state.faculty["leadFacultyName"].map((key)=>{
         let index = this.state.faculty["leadFacultyName"].indexOf(key);
-        return(<h4>{this.state.faculty['leadFacultyName'][index]}, {this.state.faculty['leadFacultyDegree'][index]}, {this.state.faculty['leadFacultyAcademicTitle'][index]}, {this.state.faculty['leadFacultyAcademicUnit'][index]}, {this.state.faculty['leadFacultyEmail'][index]}</h4>)
+        return(<h4>{this.state.faculty['leadFacultyName'][index] !== "" ?
+      this.state.faculty['leadFacultyName'][index] + ', '
+      : "" }
+      {this.state.faculty['leadFacultyDegree'][index] !== "" ?
+      this.state.faculty['leadFacultyDegree'][index] + ', '
+      : "" } 
+      {this.state.faculty['leadFacultyAcademicTitle'][index] !== "" ?
+      this.state.faculty['leadFacultyAcademicTitle'][index] + ', '
+      : "" } 
+      {this.state.faculty['leadFacultyAcademicUnit'][index] !== "" ?
+      this.state.faculty['leadFacultyAcademicUnit'][index] + ', '
+      : "" }
+      {this.state.faculty['leadFacultyEmail'][index] !== "" ?
+      this.state.faculty['leadFacultyEmail'][index]
+      : "" }</h4>)
     });
     }
 

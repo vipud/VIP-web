@@ -22,7 +22,8 @@ import TextFieldComponent from './Application/TextFieldComponent';
 import {Link} from 'react-router-dom';
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
-const TeamFormPath = 'StudentApplication_Raw_Data';
+const StudentApplicationRaw = 'StudentApplication_Raw_Data';
+const StudentApplication = 'StudentApplication';
 var db = 'Student Application';
 const style = {
   margin: "10px"
@@ -286,10 +287,14 @@ class StudentApplication extends Component{
           this.state.data
           );
       } else if(`${db}`==='Student Application'){
-          const rootRef = firebase.database().ref(`${TeamFormPath}`);
+        const rawRef = firebase.database().ref(`${StudentApplicationRaw}`);
+          rawRef.push(
+          this.state.data
+        );
+        const rootRef = firebase.database().ref(`${StudentApplication}`);
           rootRef.push(
           this.state.data
-      );
+        );
       }
       console.log("ran");
 

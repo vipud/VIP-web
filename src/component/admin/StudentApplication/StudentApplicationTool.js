@@ -23,6 +23,7 @@ class StudentApplicationTool extends Component {
     fbRef.on('value', (snap) =>{
       if(!!snap) {
         this.setState(()=>({teamData:snap.val()}));
+        console.log(this.state.teamData);
       }
     });
 

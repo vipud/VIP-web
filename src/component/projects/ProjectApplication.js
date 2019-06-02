@@ -17,7 +17,7 @@ import TextFieldComponent from './Application/TextFieldComponent';
 import {Link} from 'react-router-dom';
 import Primary from '../../Theme';
 
-const TeamFormPath = 'TeamApplication_Raw_Data';
+const TeamApplicationRaw = 'TeamApplication_Raw_Data';
 var db = 'Team Application';
 const style = {
   margin: "10px"
@@ -98,7 +98,7 @@ class ProjectApplication extends Component{
     let empty = checkEmpty(this.state.error, this.state.data, this.state.data.leadFacultyEmail, this.state.notIncluded);
     if(empty[0]){
       if(`${db}`==='Team Application'){
-          const rootRef = firebase.database().ref().child(TeamFormPath);
+          const rootRef = firebase.database().ref().child(TeamApplicationRaw);
           rootRef.push(this.state.data);
       }
       this.setState((prevState) => {

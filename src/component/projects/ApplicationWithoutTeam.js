@@ -51,7 +51,8 @@ const style = {
 }
 
 //variables
-const TeamFormPath = 'StudentApplication_Raw_Data';
+const StudentApplicationRaw = 'StudentApplication_Raw_Data';
+const StudentApplication = 'StudentApplication';
 
 class ApplicationWithoutTeam extends Component{
   constructor(){
@@ -255,7 +256,11 @@ class ApplicationWithoutTeam extends Component{
     console.log(this.state.data);
     let validation = checkEmpty(this.state.error, this.state.data, this.state.data['email'], this.state.notIncluded);
     if(validation[0]){
-      firebase.database().ref(`${TeamFormPath}`).push(this.state.data);
+      firebase.database().ref(`${StudentApplicationRaw}`).push(this.state.data);
+      this.setState({
+        open:true
+      });
+      firebase.database().ref(`${StudentApplication}`).push(this.state.data);
       this.setState({
         open:true
       });

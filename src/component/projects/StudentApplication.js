@@ -22,8 +22,8 @@ import TextFieldComponent from './Application/TextFieldComponent';
 import {Link} from 'react-router-dom';
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
-const StudentApplicationRaw = 'StudentApplication_Raw_Data';
-const StudentApplication = 'StudentApplication';
+const StudentApplicationRawFb = 'StudentApplication_Raw_Data';
+const StudentApplicationFb = 'StudentApplication';
 var db = 'Student Application';
 const style = {
   margin: "10px"
@@ -287,11 +287,11 @@ class StudentApplication extends Component{
           this.state.data
           );
       } else if(`${db}`==='Student Application'){
-        const rawRef = firebase.database().ref(`${StudentApplicationRaw}`);
+        const rawRef = firebase.database().ref(`${StudentApplicationRawFb}`);
           rawRef.push(
           this.state.data
         );
-        const rootRef = firebase.database().ref(`${StudentApplication}`);
+        const rootRef = firebase.database().ref(`${StudentApplicationFb}`);
           rootRef.push(
           this.state.data
         );
@@ -361,14 +361,14 @@ class StudentApplication extends Component{
                 <Checkbox label="Check if you're returning to VIP" checked={this.state.returning} style = {{marginTop:'20px', marginBottom:'20px'}} onCheck = {this.handleCheck} />
                 <SelectField floatingLabelText="Level" value={this.state.levelValue} onChange={this.handleLevelChange}>
                       {this.state.level.map((key, index) => {
-                        return <MenuItem value = {index} primaryText = {key} key = {key}/>
+                        return <MenuItem value = {index} primaryText = {key} errorText={this.state.errorText} key = {key}/>
                       })}
                 </SelectField>
                 {this.state.courseOptions //to do: map courses from firebase
                 ?<div>
                   <SelectField floatingLabelText="Course" value={this.state.value} onChange={this.handleCourseChange}>
                     {Object.keys(this.state.courseOptions).map((key, index) => {
-                      return <MenuItem value = {index} primaryText = {this.state.courseOptions[index] + '-' + this.state.section} key = {key}/>
+                      return <MenuItem value = {index} primaryText = {this.state.courseOptions[index] + '-' + this.state.section} errorText={this.state.errorText} key = {key}/>
                     })}
                   </SelectField>
                   {this.state.creditOptions.length > 0 &&
@@ -376,7 +376,7 @@ class StudentApplication extends Component{
                   }
                   <RadioButtonGroup defaultSelected = {0} floatingLabelText = "Credits" onChange = {this.handleCreditChange}>
                     {this.state.creditOptions.map((key, index)=>(
-                      <RadioButton value={index} label = {key} disabled = {this.state.creditOptions.length === 1} style = {styles.radioButton}/>
+                      <RadioButton value={index} label = {key} disabled = {this.state.creditOptions.length === 1} errorText={this.state.errorText} style = {styles.radioButton}/>
                     ))
                     }
                   </RadioButtonGroup>

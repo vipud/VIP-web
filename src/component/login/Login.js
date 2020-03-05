@@ -16,7 +16,7 @@ class Login extends Component {
   googleLogin(user) {
     let provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult(provider).then((result) => {
+    firebase.auth().getRedirectResult().then((result) => {
 
       }).catch(function(error) {
       // Handle Errors here.

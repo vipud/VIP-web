@@ -2,6 +2,8 @@
   "name": "VIP-web",
   "version": "0.1.0",
   "private": true,
+  "author": {"name": "UD VIP"},
+  "maintainers": ["Jaydon Reap", "Micah Pope"],
   "dependencies": {
     "axios": "^0.16.2",
     "csv2json": "^1.3.0",

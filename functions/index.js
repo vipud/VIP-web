@@ -8,6 +8,7 @@ admin.initializeApp(functions.config().firebase);
 const Announcement_Raw_Data = "Announcement_Raw_Data";
 const Announcement_Path = "Announcement/admin";
 const Announcement_Sunset = "Announcement_Sunset";
+
 // Send emails to contacts when a student application is submitted
 exports.studentApplicationNotice = functions.database.ref('/StudentApplication_Raw_Data/{applyId}')
   .onWrite(event => {
@@ -68,6 +69,7 @@ exports.studentApplicationNotice = functions.database.ref('/StudentApplication_R
         }
       })
   });
+
 // Send emails to admins when a team application is submitted
 exports.teamApplicationNotice = functions.database.ref('/TeamApplication_Raw_Data/{applyId}')
   .onWrite(event => {
@@ -178,7 +180,6 @@ exports.teamApproval = functions.database.ref('/Teams/{uuid}')
       }
     })
 
-  
 
 exports.dailyAnnouncementCron = functions.https.onRequest((req, res) => {
   const key = req.query.key;

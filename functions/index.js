@@ -24,99 +24,113 @@ exports.studentApplicationNotice = functions.database.ref('/StudentApplication_R
     let emailList;
     let nameList;
     return admin.database().ref("StudentApplication/" + applyId).set(
-          application
-      ).then(() => { //copy application to "StudentApplication"
-        return admin.database().ref().child("Teams").orderByChild('teamName').equalTo(teamName).once("value").then((snap) => {
-          let matchteam = snap.val() // contactList: {"-KpsvBfEJm0uvEL3bacU":{"advisor":"","contactEmail":"chancidy@gmail.com","contactPerson":"Henry Zhao",
-          console.log('matchteam: ', matchteam)
-          Object.keys(matchteam).forEach((key) => {
-            emailList = matchteam[key].leadFacultyEmail.split(",")
-            nameList = matchteam[key].leadFacultyName.split(",")
-          })
-            console.log('contactList: ' + emailList + ' ' + nameList)
-          })
-      })
-      .then(() => {
-        for(let admin of emailList) {
-          sgMail.send({
-            to: admin,
-            from: 'noreply@emailvip.udel.vip',
-            subject: 'Application Submission',
-            text: 'An application has been submitted',
-            dynamicTemplateData: {'application': application},
-            templateId: functions.config().sendgrid.studentapplicationid
-          }).then(res => {
-            console.log("Successfully sent message")
-          })
-          .catch(err => {
-            console.error("Failed to send message")
-            console.error(err)
-          })
-        }
-      })
-  });
-// // Send emails to admins when a team application is submitted
-// exports.teamApplicationNotice = functions.database.ref('/TeamApplication_Raw_Data/{applyId}')
-//   .onWrite(event => {
-//     if(!event.data.val()) {
-//       throw "this is not an onCreate event"
-//     }
-//     const applyId = event.params.applyId;
-//     const application = event.data.val();
-//     //application:{"desc":"","email":"Mirotznik@udel.edu","logo":"","members":"","name":"Mark Mirotznik","sections":[{"content":"EE, CE and BME â€“ Electronic material design, biosensing, additive manufacturing of electronic components, RF component design, testing and validation EE, CE and CS â€“ Embedded computing and wireless communication","title":"Major"},{"content":"","title":"Requirements"},{"content":"Mark Mirotznik (ECE)","title":"Advisor"}],"status":"","subtitle":"Continuous health monitoring","title":"E-Textiles","topics":["\"Biosignal Processing\""," \"Additive Manufacturing\""," \"Electronic Materials\""," \"RF Communication\""]}
-//     console.log("application: " + application);
-//     let adminLists;
-//     return admin.database().ref("Admin").once("value").then((snap) => {
-//         adminLists = snap.val()
-//           // adminList: { uuid123: { email: 'chancidy@gmail.com', name: 'Henry Zhao' },
-//           // uuid234514: { email: 'hzhao0329@gmail.com', name: 'Hzzzz' } }
-//       }).then(() => { //copy application to "TeamApplication"
-//         return admin.database().ref("TeamApplication/" + applyId).set(
-//           application
-//         )
-//       }).then(() => {
-//         let formatted = putJsonInTable(application);
-//         Object.keys(adminLists).forEach((uuid) => {
-//           let request = sg.emptyRequest({
-//             method: 'POST',
-//             path: '/v3/mail/send',
-//             body: {
-//               personalizations: [{
-//                 to: [{ email: adminLists[uuid].email }],
-//                 'substitutions': {
-//                   '-name-': adminLists[uuid].name,
-//                 },
-//                 subject: 'A new team application is submitted'
-//               }],
-//               from: {
-//                 email: 'noreply@emailvip.udel.vip'
-//               },
-//               content: [{
-//                 type: 'text/html',
-//                 value: `<p>Applicaiton information:</p> ${formatted.join("")}`
-//               }],
-//               'template_id': functions.config().sendgrid.templateid,
-//             }
-//           });
-//           // With promise
-//           sg.API(request)
-//             .then(function(response) {
-//               console.log(response.statusCode);
-//               console.log(response.body);
-//               console.log(response.headers);
-//             })
-//             .catch(function(error) {
-//               // error is an instance of SendGridError
-//               // The full response is attached to error.response
-//               console.log(error.response.statusCode);
-//             });
-//         });
+        application
+    ).then(() => { //copy application to "StudentApplication"
+      return admin.database().ref().child("Teams").orderByChild('teamName').equalTo(teamName).once("value").then((snap) => {
+        let matchteam = snap.val() // contactList: {"-KpsvBfEJm0uvEL3bacU":{"advisor":"","contactEmail":"chancidy@gmail.com","contactPerson":"Henry Zhao",
+        console.log('matchteam: ', matchteam)
+        Object.keys(matchteam).forEach((key) => {
+          emailList = matchteam[key].leadFacultyEmail.split(",")
+          nameList = matchteam[key].leadFacultyName.split(",")
+        })
+          console.log('contactList: ' + emailList + ' ' + nameList)
+        })
+    })
+    .then(() => {
+      for(let admin of emailList) {
+        sgMail.send({
+          to: admin,
+          from: 'noreply@emailvip.udel.vip',
+          subject: 'Application Submission',
+          text: 'An application has been submitted',
+          dynamicTemplateData: {'application': application},
+          templateId: functions.config().sendgrid.studentapplicationid
+        }).then(res => {
+          console.log("Successfully sent message")
+        })
+        .catch(err => {
+          console.error("Failed to send message")
+          console.error(err)
+        })
+      }
+    })
+});
 
-//       })
-//       // .then(() => { // remove the data from "Raw data" key after sending the email to save space
-//       //   return admin.database().ref("TeamApplication_Raw_Data/"+ applyId).remove()
-//       // })
-//   });
+// Send emails to admins when a team application is submitted
+exports.teamApplicationNotice = functions.database.ref('/TeamApplication_Raw_Data/{applyId}')
+  .onWrite((change, context) => {
+    if(!change.after.val()) {
+      throw "this is not an onCreate event"
+    }
+    const applyId = context.params.applyId;
+    const application = change.after.val();
+    let adminLists;
+    return admin.database().ref("Admin").once("value").then((snap) => {
+        adminLists = snap.val()
+          // adminList: { uuid123: { email: 'chancidy@gmail.com', name: 'Henry Zhao' },
+          // uuid234514: { email: 'hzhao0329@gmail.com', name: 'Hzzzz' } }
+    }).then(() => { //copy application to "TeamApplication"
+      return admin.database().ref("TeamApplication/" + applyId).set(
+        application
+      )
+    }).then(() => {
+      sgMail.send({
+        to: 'jreap@udel.edu',
+        from: 'noreply@emailvip.udel.vip',
+        subject: 'Team Application Submission',
+        text: 'An application has been submitted',
+        dynamicTemplateData: {'application': application},
+        templateId: functions.config().sendgrid.teamapplicationid
+      }).then(res => {
+        console.log("Successfully sent message")
+      })
+      .catch(err => {
+        console.error("Failed to send message")
+        console.error(err)
+      })
+
+      // let formatted = putJsonInTable(application);
+      // Object.keys(adminLists).forEach((uuid) => {
+      //   let request = sg.emptyRequest({
+      //     method: 'POST',
+      //     path: '/v3/mail/send',
+      //     body: {
+      //       personalizations: [{
+      //         to: [{ email: adminLists[uuid].email }],
+      //         'substitutions': {
+      //           '-name-': adminLists[uuid].name,
+      //         },
+      //         subject: 'A new team application is submitted'
+      //       }],
+      //       from: {
+      //         email: 'noreply@emailvip.udel.vip'
+      //       },
+      //       content: [{
+      //         type: 'text/html',
+      //         value: `<p>Applicaiton information:</p> ${formatted.join("")}`
+      //       }],
+      //       'template_id': functions.config().sendgrid.templateid,
+      //     }
+      //   });
+      //   // With promise
+      //   sg.API(request)
+      //     .then(function(response) {
+      //       console.log(response.statusCode);
+      //       console.log(response.body);
+      //       console.log(response.headers);
+      //     })
+      //     .catch(function(error) {
+      //       // error is an instance of SendGridError
+      //       // The full response is attached to error.response
+      //       console.log(error.response.statusCode);
+      //     });
+      // });
+
+    })
+    .then(() => { // remove the data from "Raw data" key after sending the email to save space
+      return admin.database().ref("TeamApplication_Raw_Data/"+ applyId).remove()
+    })
+  });
 
 // exports.teamApproval = functions.database.ref('/Teams/{uuid}')
 //   .onWrite(event => {

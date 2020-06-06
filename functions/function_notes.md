@@ -17,3 +17,20 @@
   teamName: 'Cloud Crypto' 
 }
 `
+
+*teamApplicationNotice Object Example*
+
+ `
+{ 
+  goals: 'Research Internet of Things',
+  keyElements: 'IOT',
+  leadFacultyAcademicTitle: 'Ph.D',
+  leadFacultyAcademicUnit: 'CISC',
+  leadFacultyDegree: 'Doctorate',
+  leadFacultyEmail: 'jreap@udel.edu',
+  leadFacultyName: 'Jaydon Reap',
+  majorsPreparationandInterests: 'Computer Science, etc.',
+  researchAreas: 'Internet of Things, Networking',
+  researchIssues: 'All the issues'
+}
+`

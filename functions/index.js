@@ -25,68 +25,34 @@ exports.studentApplicationNotice = functions.database.ref('/StudentApplication_R
     let nameList;
     return admin.database().ref("StudentApplication/" + applyId).set(
           application
-      ).then(() => {
-        // USED TO BE BEFORE THE ABOVE
-      //   .then(() => { //copy application to "StudentApplication"
-      //   return admin.database().ref().child("Teams").orderByChild('teamName').equalTo(teamName).once("value").then((snap) => {
-      //     let matchteam = snap.val() // contactList: {"-KpsvBfEJm0uvEL3bacU":{"advisor":"","contactEmail":"chancidy@gmail.com","contactPerson":"Henry Zhao",
-      //     // console.log('matchteam: ', matchteam)
-      //     // Object.keys(matchteam).forEach((key) => {
-      //     //   emailList = matchteam[key].leadFacultyEmail.split(",")
-      //     //   nameList = matchteam[key].leadFacultyName.split(",")
-      //     // })
-      //       // console.log("contactList: "+ emailList + nameList)
-      //     })
-      // })
-
-        sgMail.send({
-          to: 'jreap@udel.edu',
-          from: 'noreply@emailvip.udel.vip',
-          subject: 'Application Submission',
-          text: 'An application has been submitted',
-          dynamicTemplateData: {'application': application},
-          templateId: functions.config().sendgrid.studentapplicationid
-        }).then(res => {
-          console.log("Successfully sent message")
-          console.log(res)
-        })
-        .catch(err => {
-          console.error("Failed to send message")
-          console.error(err)
-        })
-
-        /* let formatted = putJsonInTable(application);
-        let request = sg.emptyRequest({
-          method: 'POST',
-          path: '/v3/mail/send',
-          body: {
-            personalizations: [{
-              to: [{ email: "jreap@udel.edu" }],
-              'substitutions': {
-                '-name-': "Jaydon Reap",
-              },
-              subject: 'A new student application is submitted'
-            }],
-            from: {
-              email: 'noreply@emailvip.udel.vip'
-            },
-            content: [{
-              type: 'text/html',
-              value: `<p>Applicaiton information:</p> ${formatted.join("")}`
-            }],
-            'template_id': functions.config().sendgrid.studentapplicationid,
-          }
-        });
-        // With promise
-        sg.API(request)
-          .then(function(response) {
-            console.log(response.statusCode);
-            console.log(response.body);
-            console.log(response.headers);
+      ).then(() => { //copy application to "StudentApplication"
+        return admin.database().ref().child("Teams").orderByChild('teamName').equalTo(teamName).once("value").then((snap) => {
+          let matchteam = snap.val() // contactList: {"-KpsvBfEJm0uvEL3bacU":{"advisor":"","contactEmail":"chancidy@gmail.com","contactPerson":"Henry Zhao",
+          console.log('matchteam: ', matchteam)
+          Object.keys(matchteam).forEach((key) => {
+            emailList = matchteam[key].leadFacultyEmail.split(",")
+            nameList = matchteam[key].leadFacultyName.split(",")
           })
-          .catch(function(error) {
-            console.log(error.response.statusCode);
-          }); */
+            console.log('contactList: ' + emailList + ' ' + nameList)
+          })
+      })
+      .then(() => {
+        for(let admin of emailList) {
+          sgMail.send({
+            to: admin,
+            from: 'noreply@emailvip.udel.vip',
+            subject: 'Application Submission',
+            text: 'An application has been submitted',
+            dynamicTemplateData: {'application': application},
+            templateId: functions.config().sendgrid.studentapplicationid
+          }).then(res => {
+            console.log("Successfully sent message")
+          })
+          .catch(err => {
+            console.error("Failed to send message")
+            console.error(err)
+          })
+        }
       })
   });
 // // Send emails to admins when a team application is submitted

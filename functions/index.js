@@ -1,6 +1,10 @@
 var functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const secureCompare = require('secure-compare');
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(functions.config().sendgrid.key)
+
+
 var sg = require('sendgrid')(functions.config().sendgrid.key);
 //init
 admin.initializeApp();
@@ -34,7 +38,24 @@ exports.studentApplicationNotice = functions.database.ref('/StudentApplication_R
       //       // console.log("contactList: "+ emailList + nameList)
       //     })
       // })
-        let formatted = putJsonInTable(application);
+
+        sgMail.send({
+          to: 'jreap@udel.edu',
+          from: 'noreply@emailvip.udel.vip',
+          subject: 'Application Submission',
+          text: 'An application has been submitted',
+          dynamicTemplateData: {'application': application},
+          templateId: functions.config().sendgrid.studentapplicationid
+        }).then(res => {
+          console.log("Successfully sent message")
+          console.log(res)
+        })
+        .catch(err => {
+          console.error("Failed to send message")
+          console.error(err)
+        })
+
+        /* let formatted = putJsonInTable(application);
         let request = sg.emptyRequest({
           method: 'POST',
           path: '/v3/mail/send',
@@ -65,7 +86,7 @@ exports.studentApplicationNotice = functions.database.ref('/StudentApplication_R
           })
           .catch(function(error) {
             console.log(error.response.statusCode);
-          });
+          }); */
       })
   });
 // // Send emails to admins when a team application is submitted
